@@ -12,7 +12,6 @@
 
 //     const [loading, setLoading] = useState(true);
 
-
 //     const applyFilter = () => {
 //         if (speciality) {
 //             setFilterDoc(
@@ -26,10 +25,9 @@
 //     useEffect(() => {
 //         applyFilter();
 //     }, [doctors, speciality]);
-    
 
 //     return (
-        
+
 //         <div>
 //             <p className="text-gray-600">
 //                 Browse through the doctors specialist.
@@ -183,7 +181,6 @@
 
 // export default Doctors;
 
-
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "./../context/AppContext";
@@ -335,7 +332,7 @@ const Doctors = () => {
                             key={index}
                         >
                             <img
-                                className="bg-green-50 w-[270px] h-[220px] w-full object-cover"
+                                className="bg-green-50  h-[240px] w-[270px] object-fill "
                                 src={item.image}
                                 alt=""
                             />

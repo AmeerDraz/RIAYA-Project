@@ -319,7 +319,7 @@
 //                     receipt: order.receipt,
 //                     handler: async (response) => {
 //                         console.log(response);
-        
+
 //                         try {
 //                             const { data } = await axios.post(
 //                                 backendUrl + "/api/user/verifyRazorpay",
@@ -336,11 +336,11 @@
 //                         }
 //                     },
 //                 };
-        
+
 //                 const rzp = new window.Razorpay(options);
 //                 rzp.open();
 //             };
-        
+
 //             const appointmentRazorpay = async (appointmentId) => {
 //                 try {
 //                     const { data } = await axios.post(
@@ -348,7 +348,7 @@
 //                         { appointmentId },
 //                         { headers: { token } }
 //                     );
-        
+
 //                     if (data.success) {
 //                         initPay(data.order);
 //                     }
@@ -357,7 +357,7 @@
 //                     toast.error(error.message);
 //                 }
 //             };
-    
+
 //     useEffect(() => {
 //         if (token) {
 //             getUserAppointments();
@@ -452,7 +452,6 @@
 // };
 
 // export default MyAppointments;
-
 
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
@@ -628,7 +627,7 @@ const MyAppointments = () => {
                     >
                         <div>
                             <img
-                                className="w-32 bg-teal-50"
+                                className="bg-teal-50 h-32 w-32 object-fill"
                                 src={item.docData.image}
                                 alt={item.docData.name}
                             />
