@@ -56,7 +56,7 @@ export default function Testimonial() {
           };
 
     return (
-        <section className="bg-white py-8 md:py-8 min-h-[320px] max-h-[320px] overflow-hidden">
+        <section className="bg-white py-8 md:py-8 min-h-[320px] max-h-[350px] overflow-scroll">
             <div className="max-w-5xl mx-auto relative flex items-center justify-center px-4">
                 {/* Left Arrow */}
                 <button
