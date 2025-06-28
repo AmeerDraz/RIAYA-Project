@@ -27,6 +27,7 @@ const Login = () => {
                     localStorage.setItem("token", data.token);
                     setToken(data.token);
                     toast.success("Account created successfully!");
+                    navigate("/my-profile");
                 } else {
                     toast.error(data.message);
                 }
@@ -145,7 +146,7 @@ const Login = () => {
 
                             {state === "Sign Up" ? (
                                 <p>
-                                    Already have an account?{" "}
+                                    Already have an account?
                                     <span
                                         onClick={() => setState("Login")}
                                         className="text-primary cursor-pointer underline"
