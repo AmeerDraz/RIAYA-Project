@@ -292,7 +292,7 @@
 
 import validator from "validator";
 import bcrypt from "bcrypt";
-import userModel from "../models/userModel.js";
+import {userModel, UserStatus} from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
@@ -371,6 +371,21 @@ const updateProfile = async (req, res) => {
         const { name, phone, address, dob, gender } = req.body;
         const imageFile = req.file;
 
+        var isValidData = false;
+        if (
+            !name || typeof name !== "string" || name.trim() === "" ||
+            !phone || typeof phone !== "string" || !/^\+?[0-9]{7,15}$/.test(phone) ||
+            !address || typeof address !== "string" || address.trim() === "" ||
+            !dob || isNaN(Date.parse(dob)) ||
+            !gender || !["male", "female", "unselected"].includes(gender.toLowerCase())
+        ) {
+            // todo: nothing
+        }else {
+            isValidData = true;
+        }
+        console.log(req.body)
+        console.log(isValidData)
+
         if (!name || !phone || !dob || !gender || !address) {
             return res.json({ success: false, message: "Missing data" });
         }
@@ -381,6 +396,7 @@ const updateProfile = async (req, res) => {
             address: JSON.parse(address),
             dob,
             gender,
+            status: isValidData ? UserStatus.ACTIVE : UserStatus.ONBORDING
         };
 
         if (imageFile) {
@@ -422,6 +438,11 @@ const bookAppointment = async (req, res) => {
         }
 
         const userData = await userModel.findById(userId).select("-password");
+
+        if(userData.status !== UserStatus.ACTIVE){
+            res.json({ success: false, message: "You are not allowed to book an appointment, please fill you profile data" });
+        }
+
         delete docData.slots_booked;
 
         const appointmentData = {

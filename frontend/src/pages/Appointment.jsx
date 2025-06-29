@@ -11,8 +11,7 @@ const Appointment = () => {
     const { doctors, currencySymbol, backendUrl, token, getDoctorsData } =
         useContext(AppContext);
 
-    const daysOfWeek = ["SUN", "MON", "TUE", "WES", "THU", "FRI", "SAT"];
-
+    const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     const navigate = useNavigate();
 
     const [docInfo, setDocInfo] = useState(null);
@@ -28,20 +27,16 @@ const Appointment = () => {
     const getAvailableSlots = async () => {
         setDocSlots([]);
 
-        // getting current date
         let today = new Date();
 
         for (let i = 0; i < 7; i++) {
-            // getting date with index
             let currentDate = new Date(today);
             currentDate.setDate(today.getDate() + i);
 
-            // setting end time of the date with index
             let endTime = new Date();
             endTime.setDate(today.getDate() + i);
             endTime.setHours(21, 0, 0, 0);
 
-            // setting hours
             if (today.getDate() === currentDate.getDate()) {
                 currentDate.setHours(
                     currentDate.getHours() > 10
@@ -62,14 +57,11 @@ const Appointment = () => {
                     minute: "2-digit",
                 });
 
-                // وظيفتهن لعند الشرط معهن لحتى الموعد المحجوز لا يظهر للمستخدم
-
                 let day = currentDate.getDate();
                 let month = currentDate.getMonth() + 1;
                 let year = currentDate.getFullYear();
 
                 const slotDate = day + "_" + month + "_" + year;
-
                 const slotTime = formattedTime;
 
                 const isSlotAvailable =
@@ -79,14 +71,11 @@ const Appointment = () => {
                         : true;
 
                 if (isSlotAvailable) {
-                    // add Slot to array
                     timeSlots.push({
                         datetime: new Date(currentDate),
                         time: formattedTime,
                     });
                 }
-
-                // Increment current time by 30 minutes
 
                 currentDate.setMinutes(currentDate.getMinutes() + 30);
             }
@@ -97,8 +86,21 @@ const Appointment = () => {
 
     const bookAppointment = async () => {
         if (!token) {
-            toast.warn("Login to book appointment");
+            toast.warn("Please login to book an appointment");
             return navigate("/login");
+        }
+
+        let finalSlotTime = slotTime;
+
+        if (!finalSlotTime) {
+            const todaySlots = docSlots[slotIndex];
+            if (!todaySlots || todaySlots.length === 0) {
+                toast.error("No available slots for the selected day");
+                return;
+            }
+
+            finalSlotTime = todaySlots[0].time;
+            toast.info(`Auto-selected first available time: ${finalSlotTime}`);
         }
 
         try {
@@ -110,11 +112,9 @@ const Appointment = () => {
 
             const slotDate = day + "_" + month + "_" + year;
 
-            // console.log(slotDate);
-
             const { data } = await axios.post(
                 backendUrl + "/api/user/book-appointment",
-                { docId, slotDate, slotTime },
+                { docId, slotDate, slotTime: finalSlotTime },
                 { headers: { token } }
             );
 
@@ -127,7 +127,7 @@ const Appointment = () => {
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.message);
+            toast.error("Error while booking appointment");
         }
     };
 
@@ -136,17 +136,13 @@ const Appointment = () => {
     }, [doctors, docId]);
 
     useEffect(() => {
-        getAvailableSlots();
+        if (docInfo) getAvailableSlots();
     }, [docInfo]);
-
-    useEffect(() => {
-        console.log(docSlots);
-    }, [docSlots]);
 
     return (
         docInfo && (
             <div>
-                {/* ----------------- Doctor Details ------------------------- */}
+                {/* Doctor Details */}
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div>
                         <img
@@ -157,8 +153,6 @@ const Appointment = () => {
                     </div>
 
                     <div className="flex-1 border border-gray-400 rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
-                        {/* --------------- Doc Info : name, degree experience --------------- */}
-
                         <p className="flex items-center gap-2 text-2xl font-medium text-gray-900">
                             {docInfo.name}
                             <img
@@ -175,8 +169,6 @@ const Appointment = () => {
                                 {docInfo.experience}
                             </button>
                         </div>
-
-                        {/* -------- Doctor About ------------ */}
 
                         <div>
                             <p className="flex items-center gap-1 text-sm font-medium text-gray-900 mt-3">
@@ -196,15 +188,18 @@ const Appointment = () => {
                     </div>
                 </div>
 
-                {/* ------------ Booking Slots ------------ */}
-
+                {/* Booking Slots */}
                 <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
                     <p>Booking slots</p>
+
                     <div className="flex gap-3 items-center w-full overflow-x-scroll mt-4">
                         {docSlots.length &&
                             docSlots.map((item, index) => (
                                 <div
-                                    onClick={() => setSlotIndex(index)}
+                                    onClick={() => {
+                                        setSlotIndex(index);
+                                        setSlotTime("");
+                                    }}
                                     className={`text-center py-6 min-w-16 rounded-[6px] cursor-pointer ${
                                         slotIndex === index
                                             ? "bg-primary text-white"
@@ -216,7 +211,7 @@ const Appointment = () => {
                                         {item[0] &&
                                             daysOfWeek[
                                                 item[0].datetime.getDay()
-                                            ]}
+                                                ]}
                                     </p>
                                     <p>
                                         {item[0] && item[0].datetime.getDate()}
@@ -250,8 +245,11 @@ const Appointment = () => {
                     </button>
                 </div>
 
-                {/* Listing Related Doctors */}
-                <RelatedDoctors docId={docId} speciality={docInfo.speciality} />
+                {/* Related Doctors */}
+                <RelatedDoctors
+                    docId={docId}
+                    speciality={docInfo.speciality}
+                />
             </div>
         )
     );

@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
 
+const UserStatus = Object.freeze({
+    ACTIVE: "active",
+    INACTIVE: "inactive",
+    ONBORDING: "onbording",
+});
 
 const userSchema = new mongoose.Schema({
     name:{type:String , required:true},
@@ -10,9 +15,10 @@ const userSchema = new mongoose.Schema({
     gender:{type:String,default:"unselected"},
     dob:{type:String,default:"unselected"},
     phone:{type:String,default:"000000000"},
-})
+    status: {type: String, required:true , default: UserStatus.ONBORDING}
+}, { timestamps: true })
 
 const userModel = mongoose.models.user || mongoose.model('user', userSchema)
 
-export default userModel
+export {userModel, UserStatus}
 
