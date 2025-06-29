@@ -106,7 +106,7 @@ const DoctorAppointments = () => {
                                 />
                                 <img
                                     onClick={() =>
-                                        completeAppointment(item._id)
+                                        completeAppointment(item._id,)
                                     }
                                     className="
                                 w-10 cursor-pointer"
@@ -123,8 +123,6 @@ const DoctorAppointments = () => {
 };
 
 export default DoctorAppointments;
-
-
 
 // import React, { useContext, useEffect } from "react";
 // import { DoctorContext } from "../../context/DoctorContext";

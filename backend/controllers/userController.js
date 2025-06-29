@@ -287,12 +287,9 @@
 //     verifyRazorpay,
 // };
 
-
-
-
 import validator from "validator";
 import bcrypt from "bcrypt";
-import {userModel, UserStatus} from "../models/userModel.js";
+import { userModel, UserStatus } from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
@@ -373,18 +370,26 @@ const updateProfile = async (req, res) => {
 
         var isValidData = false;
         if (
-            !name || typeof name !== "string" || name.trim() === "" ||
-            !phone || typeof phone !== "string" || !/^\+?[0-9]{7,15}$/.test(phone) ||
-            !address || typeof address !== "string" || address.trim() === "" ||
-            !dob || isNaN(Date.parse(dob)) ||
-            !gender || !["male", "female", "unselected"].includes(gender.toLowerCase())
+            !name ||
+            typeof name !== "string" ||
+            name.trim() === "" ||
+            !phone ||
+            typeof phone !== "string" ||
+            !/^\+?[0-9]{7,15}$/.test(phone) ||
+            !address ||
+            typeof address !== "string" ||
+            address.trim() === "" ||
+            !dob ||
+            isNaN(Date.parse(dob)) ||
+            !gender ||
+            !["male", "female", "unselected"].includes(gender.toLowerCase())
         ) {
             // todo: nothing
-        }else {
+        } else {
             isValidData = true;
         }
-        console.log(req.body)
-        console.log(isValidData)
+        console.log(req.body);
+        console.log(isValidData);
 
         if (!name || !phone || !dob || !gender || !address) {
             return res.json({ success: false, message: "Missing data" });
@@ -396,17 +401,24 @@ const updateProfile = async (req, res) => {
             address: JSON.parse(address),
             dob,
             gender,
-            status: isValidData ? UserStatus.ACTIVE : UserStatus.ONBORDING
+            status: isValidData ? UserStatus.ACTIVE : UserStatus.ONBORDING,
         };
 
         if (imageFile) {
-            const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
-                resource_type: "image",
-            });
+            const imageUpload = await cloudinary.uploader.upload(
+                imageFile.path,
+                {
+                    resource_type: "image",
+                }
+            );
             updatedData.image = imageUpload.secure_url;
         }
 
-        const updatedUser = await userModel.findByIdAndUpdate(userId, updatedData, { new: true });
+        const updatedUser = await userModel.findByIdAndUpdate(
+            userId,
+            updatedData,
+            { new: true }
+        );
         res.json({ success: true, message: "Profile updated", updatedUser });
     } catch (error) {
         console.error(error);
@@ -417,19 +429,25 @@ const updateProfile = async (req, res) => {
 // حجز موعد
 const bookAppointment = async (req, res) => {
     try {
-        const userId = req.userId;  // من التوكن
+        const userId = req.userId; // من التوكن
         const { docId, slotDate, slotTime } = req.body;
 
         const docData = await doctorModel.findById(docId).select("-password");
         if (!docData || !docData.available) {
-            return res.json({ success: false, message: "Doctor not available" });
+            return res.json({
+                success: false,
+                message: "Doctor not available",
+            });
         }
 
         let slots_booked = docData.slots_booked || {};
 
         if (slots_booked[slotDate]) {
             if (slots_booked[slotDate].includes(slotTime)) {
-                return res.json({ success: false, message: "Slot not available" });
+                return res.json({
+                    success: false,
+                    message: "Slot not available",
+                });
             } else {
                 slots_booked[slotDate].push(slotTime);
             }
@@ -440,8 +458,10 @@ const bookAppointment = async (req, res) => {
         const userData = await userModel.findById(userId).select("-password");
 
         if(userData.status !== UserStatus.ACTIVE){
-            res.json({ success: false, message: "You are not allowed to book an appointment, please fill you profile data" });
+            return res.json({ success: false, message: "You are not allowed to book an appointment, please fill you profile data" });
         }
+
+       
 
         delete docData.slots_booked;
 
@@ -488,19 +508,26 @@ const cancelAppointment = async (req, res) => {
 
         const appointmentData = await appointmentModel.findById(appointmentId);
         if (!appointmentData) {
-            return res.json({ success: false, message: "Appointment not found" });
+            return res.json({
+                success: false,
+                message: "Appointment not found",
+            });
         }
         if (appointmentData.userId.toString() !== userId) {
             return res.json({ success: false, message: "Unauthorized action" });
         }
 
-        await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true });
+        await appointmentModel.findByIdAndUpdate(appointmentId, {
+            cancelled: true,
+        });
 
         const { docId, slotDate, slotTime } = appointmentData;
         const doctorData = await doctorModel.findById(docId);
         let slots_booked = doctorData.slots_booked;
 
-        slots_booked[slotDate] = slots_booked[slotDate].filter(e => e !== slotTime);
+        slots_booked[slotDate] = slots_booked[slotDate].filter(
+            (e) => e !== slotTime
+        );
         await doctorModel.findByIdAndUpdate(docId, { slots_booked });
 
         res.json({ success: true, message: "Appointment cancelled" });
@@ -523,7 +550,10 @@ const paymentRazorpay = async (req, res) => {
         const appointmentData = await appointmentModel.findById(appointmentId);
 
         if (!appointmentData || appointmentData.cancelled) {
-            return res.json({ success: false, message: "Appointment cancelled or not found" });
+            return res.json({
+                success: false,
+                message: "Appointment cancelled or not found",
+            });
         }
 
         const options = {
@@ -544,10 +574,14 @@ const paymentRazorpay = async (req, res) => {
 const verifyRazorpay = async (req, res) => {
     try {
         const { razorpay_order_id } = req.body;
-        const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
+        const orderInfo = await razorpayInstance.orders.fetch(
+            razorpay_order_id
+        );
 
         if (orderInfo.status === "paid") {
-            await appointmentModel.findByIdAndUpdate(orderInfo.receipt, { payment: true });
+            await appointmentModel.findByIdAndUpdate(orderInfo.receipt, {
+                payment: true,
+            });
             res.json({ success: true, message: "Payment successful" });
         } else {
             res.json({ success: false, message: "Payment not successful" });

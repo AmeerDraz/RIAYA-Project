@@ -52,13 +52,85 @@
 
 // export default DoctorsList;
 
+// ************************************/
+
+// import React, { useContext, useEffect } from "react";
+// import { AdminContext } from "../../context/AdminContext";
+
+// const DoctorsList = () => {
+//     const { doctors, aToken, getAllDoctors, changeAvailapility } =
+//         useContext(AdminContext);
+
+//     useEffect(() => {
+//         if (aToken) {
+//             getAllDoctors();
+//         }
+//     }, [aToken]);
+
+//     // لو الدكاترة ما موجودين أو فارغين نعرض رسالة
+//     if (!doctors || doctors.length === 0) {
+//         return (
+//             <div className="m-5">
+//                 <h1 className="text-lg font-medium">All Doctors</h1>
+//                 <p className="mt-4 text-gray-500">No doctors found.</p>
+//             </div>
+//         );
+//     }
+
+//     return (
+//         <div className="m-5 max-h-[90vh] overflow-y-scroll">
+//             <h1 className="text-lg font-medium">All Doctors</h1>
+//             <div className="w-full flex flex-wrap gap-4 pt-5 gap-y-6">
+//                 {doctors.map((item, index) => (
+//                     <div
+//                         className="border border-teal-200 rounded-xl max-w-56 overflow-hidden cursor-pointer group"
+//                         key={item._id || index}
+//                     >
+//                         <img
+//                             className="w-56 bg-teal-50 group-hover:bg-primary hover:scale-105 transition-all duration-500 h-[220px] w-full object-cover"
+//                             src={item.image}
+//                             alt={item.name}
+//                         />
+//                         <div className="p-4">
+//                             <p className="text-neutral-800 text-lg font-medium">
+//                                 {item.name}
+//                             </p>
+//                             <p className="text-zinc-600 text-sm">
+//                                 {item.speciality}
+//                             </p>
+//                             <div className="mt-2 flex items-center gap-1 text-sm">
+//                                 <input
+//                                     onChange={() =>
+//                                         changeAvailapility(item._id)
+//                                     }
+//                                     type="checkbox"
+//                                     checked={item.available}
+//                                 />
+//                                 <p>Available</p>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 ))}
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default DoctorsList;
 
 import React, { useContext, useEffect } from "react";
 import { AdminContext } from "../../context/AdminContext";
 
+import Loader from "../../components/Loader";
+
 const DoctorsList = () => {
-    const { doctors, aToken, getAllDoctors, changeAvailapility } =
-        useContext(AdminContext);
+    const {
+        doctors,
+        aToken,
+        getAllDoctors,
+        changeAvailapility,
+        loadingDoctors,
+    } = useContext(AdminContext);
 
     useEffect(() => {
         if (aToken) {
@@ -66,7 +138,16 @@ const DoctorsList = () => {
         }
     }, [aToken]);
 
-    // لو الدكاترة ما موجودين أو فارغين نعرض رسالة
+    // أثناء التحميل
+    if (loadingDoctors) {
+        return (
+            <div className="m-5 flex justify-center items-center h-[70vh]">
+                <Loader />
+            </div>
+        );
+    }
+
+    // لو الدكاترة غير موجودين
     if (!doctors || doctors.length === 0) {
         return (
             <div className="m-5">
@@ -85,7 +166,6 @@ const DoctorsList = () => {
                         className="border border-teal-200 rounded-xl max-w-56 overflow-hidden cursor-pointer group"
                         key={item._id || index}
                     >
-                      
                         <img
                             className="w-56 bg-teal-50 group-hover:bg-primary hover:scale-105 transition-all duration-500 h-[220px] w-full object-cover"
                             src={item.image}

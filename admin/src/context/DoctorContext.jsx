@@ -35,11 +35,11 @@ const DoctorContextProvider = (props) => {
         }
     };
 
-    const completeAppointment = async (appointmentId) => {
+    const completeAppointment = async (appointmentId, docId) => {
         try {
             const { data } = await axios.post(
                 backendUrl + "/api/doctor/complete-appointment",
-                { appointmentId },
+                { appointmentId, docId }, //FIXME:
                 { headers: { dToken } }
             );
             if (data.success) {
@@ -123,7 +123,6 @@ const DoctorContextProvider = (props) => {
         profileData,
         setProfileData,
         getProfileData,
-
     };
     return (
         <DoctorContext.Provider value={value}>

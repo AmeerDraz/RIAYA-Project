@@ -535,7 +535,7 @@ const MyAppointments = () => {
                 toast.success(data.message);
                 getUserAppointments();
                 getDoctorsData();
-            } else {
+            } else {                
                 toast.error(data.message);
             }
         } catch (error) {
@@ -577,6 +577,10 @@ const MyAppointments = () => {
         rzp.open();
     };
 
+    
+    
+
+
     const appointmentRazorpay = async (appointmentId) => {
         try {
             const { data } = await axios.post(
@@ -587,6 +591,10 @@ const MyAppointments = () => {
 
             if (data.success) {
                 initPay(data.order);
+            } else {
+                console.log(data);
+                
+                toast.error(data.message);
             }
         } catch (error) {
             console.log(error);
@@ -627,7 +635,7 @@ const MyAppointments = () => {
                     >
                         <div>
                             <img
-                                className="bg-teal-50 h-32 w-32 object-fill"
+                                className="bg-teal-50 h-32 w-32 object-cover object-top"
                                 src={item.docData.image}
                                 alt={item.docData.name}
                             />
