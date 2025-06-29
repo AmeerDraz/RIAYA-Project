@@ -68,11 +68,11 @@
 //                                 }
 //                                 alt=""
 //                             />
-                            // <img
-                            //     className="w-10 absolute bottom-12 right-12"
-                            //     src={image ? "" : assets.upload_icon}
-                            //     alt=""
-                            // />
+// <img
+//     className="w-10 absolute bottom-12 right-12"
+//     src={image ? "" : assets.upload_icon}
+//     alt=""
+// />
 //                             <input
 //                                 onChange={(e) => setImage(e.target.files[0])}
 //                                 type="file"
@@ -242,6 +242,7 @@ import { assets } from "../assets/assets";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 const MyProfile = () => {
     const { userData, setUserData, token, backendUrl, loadUserProfileData } =
@@ -263,6 +264,8 @@ const MyProfile = () => {
 
     const updateUserProfileData = async () => {
         try {
+            setLoading(true); // تبدأ عرض الـ Loader عند بداية الحفظ
+
             const formData = new FormData();
             formData.append("name", userData.name);
             formData.append("phone", userData.phone);
@@ -296,11 +299,13 @@ const MyProfile = () => {
         } catch (error) {
             console.error(error);
             toast.error("حدث خطأ أثناء تحديث البيانات");
+        } finally {
+            setLoading(false); // إخفاء الـ Loader بعد انتهاء الحفظ سواء بنجاح أو فشل
         }
     };
 
     if (loading || !userData) {
-        return <p>Loading profile...</p>;
+        return <Loader />;
     }
 
     return (
