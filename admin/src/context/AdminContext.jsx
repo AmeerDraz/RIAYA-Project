@@ -543,7 +543,6 @@
 
 // export default AdminContextProvider;
 
-
 import { createContext, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -551,34 +550,37 @@ import axios from "axios";
 export const AdminContext = createContext();
 
 const AdminContextProvider = (props) => {
-    const [aToken, setAToken] = useState(
-        localStorage.getItem("aToken") ? localStorage.getItem("aToken") : ""
-    );
-
+    const [aToken, setAToken] = useState(localStorage.getItem("aToken") || "");
     const [doctors, setDoctors] = useState([]);
+    const [loadingDoctors, setLoadingDoctors] = useState(false);
     const [appointments, setAppointments] = useState([]);
-    const [dashData, setDashData] = useState(null); // بدل false لـ null لأن البيانات كائن
-    const [loadingDashData, setLoadingDashData] = useState(false); // إضافة حالة التحميل الخاصة بالداشبورد
+    const [dashData, setDashData] = useState(null);
+    const [loadingDashData, setLoadingDashData] = useState(false);
     const [loadingAppointments, setLoadingAppointments] = useState(false);
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const getAllDoctors = async () => {
+        setLoadingDoctors(true);
         try {
-            const { data } = await axios.post(
+            const { data } = await axios.get(
                 backendUrl + "/api/admin/all-doctors",
-                {},
                 { headers: { aToken } }
             );
 
+            console.log("Doctors API Response:", data);
+
             if (data.success) {
-                setDoctors(data.doctors);
+                setDoctors(data.doctor); // ✅ هذا هو التعديل الأهم
+                console.log("Doctors updated:", data.doctor);
             } else {
                 toast.error(data.message);
             }
         } catch (error) {
+            console.error("Error fetching doctors:", error);
             toast.error(error.message);
         }
+        setLoadingDoctors(false);
     };
 
     const changeAvailapility = async (docId) => {
@@ -628,7 +630,7 @@ const AdminContextProvider = (props) => {
             if (data.success) {
                 toast.success(data.message);
                 getAllAppointments();
-                getDashData(); // تحديث بيانات الداشبورد بعد الإلغاء
+                getDashData();
             } else {
                 toast.error(data.message);
             }
@@ -670,6 +672,7 @@ const AdminContextProvider = (props) => {
         getDashData,
         loadingDashData,
         loadingAppointments,
+        loadingDoctors,
     };
 
     return (

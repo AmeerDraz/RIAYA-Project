@@ -332,7 +332,7 @@ const AllAppointments = () => {
                         </p>
 
                         {/* Date & Time */}
-                        <p>
+                        <p className="text-start">
                             {item.slotDate
                                 ? slotDateFormat(item.slotDate)
                                 : "-"}
@@ -340,7 +340,7 @@ const AllAppointments = () => {
                         </p>
 
                         {/* Doctor */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-start gap-2">
                             <img
                                 className="min-w-8 min-h-8 w-8 h-8 object-cover object-top rounded-full bg-gray-300"
                                 src={
@@ -404,3 +404,5 @@ const AllAppointments = () => {
 };
 
 export default AllAppointments;
+
+
