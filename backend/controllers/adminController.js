@@ -294,7 +294,7 @@ const appointmentsAdmin = async (req, res) => {
 };
 
 // API to cancel appointment
-const appointmentCancel = async (req, res) => {
+const cancelAppointment = async (req, res) => {
     try {
         const { appointmentId } = req.body;
         const appointmentData = await appointmentModel.findById(appointmentId);
@@ -340,12 +340,39 @@ const adminDashboard = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 };
+// API لتغيير حالة التوافر للطبيب
+const changeAvailapility = async (req, res) => {
+    try {
+        // تأكد من وجود docId في الجسم
+        const { docId } = req.body;
+
+        // تحقق من وجود الطبيب
+        const doctor = await doctorModel.findById(docId);
+        if (!doctor) {
+            return res.status(404).json({ success: false, message: "Doctor not found" });
+        }
+
+        // تغيير التوافر
+        doctor.available = !doctor.available; // عكس حالة التوافر (إذا كان متاحًا يصبح غير متاح والعكس)
+        await doctor.save();
+
+        // إرسال استجابة ناجحة
+        res.json({ success: true, message: `Doctor availability updated to ${doctor.available ? "Available" : "Not Available"}` });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
+
+
 
 export {
     addDoctor,
     loginAdmin,
     allDoctor,
     appointmentsAdmin,
-    appointmentCancel,
+    cancelAppointment,
     adminDashboard,
+    changeAvailapility,
 };
