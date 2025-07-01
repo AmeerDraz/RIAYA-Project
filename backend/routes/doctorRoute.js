@@ -42,6 +42,7 @@ import {
     doctorProfile,
     loginDoctor,
     updateDoctorProfile,
+    // updateSlotsSettings,
     // getAvailableSlots,
 } from "../controllers/doctorController.js";
 import authDoctor from "../middlewares/authDoctor.js";
@@ -61,5 +62,7 @@ doctorRouter.post("/update-profile", authDoctor, updateDoctorProfile);
 
 // API: احضار المواعيد المتاحة لطبيب معين
 // doctorRouter.get("/available-slots/:doctorId", getAvailableSlots);
+
+
 
 export default doctorRouter;

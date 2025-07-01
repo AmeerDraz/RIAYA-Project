@@ -761,9 +761,33 @@ const DoctorProfile = () => {
         }
     };
 
+    // const saveSlotsSettings = async () => {
+    //     try {
+    //         setLoading(true); // ✅ بدء اللودر
+    //         const { data } = await axios.post(
+    //             backendUrl + "/api/doctor/update-slots-settings",
+    //             slotsSettings,
+    //             { headers: { dToken } }
+    //         );
+
+    //         if (data.success) {
+    //             toast.success(data.message);
+    //             await getProfileData();
+    //         } else {
+    //             toast.error(data.message);
+    //         }
+    //     } catch (error) {
+    //         toast.error(error.message);
+    //         console.log(error);
+    //     } finally {
+    //         setLoading(false); // ✅ إيقاف اللودر
+    //     }
+    // };
+
+
     const saveSlotsSettings = async () => {
         try {
-            setLoading(true); // ✅ بدء اللودر
+            setLoading(true);
             const { data } = await axios.post(
                 backendUrl + "/api/doctor/update-slots-settings",
                 slotsSettings,
@@ -773,6 +797,7 @@ const DoctorProfile = () => {
             if (data.success) {
                 toast.success(data.message);
                 await getProfileData();
+                console.log("Updated profileData:", profileData);
             } else {
                 toast.error(data.message);
             }
@@ -780,9 +805,11 @@ const DoctorProfile = () => {
             toast.error(error.message);
             console.log(error);
         } finally {
-            setLoading(false); // ✅ إيقاف اللودر
+            setLoading(false);
         }
     };
+    
+
 
     useEffect(() => {
         if (profileData) {

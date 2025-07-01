@@ -474,106 +474,140 @@ const updateDoctorProfile = async (req, res) => {
 };
 
 
-const getAvailableSlots = async (req, res) => {
-    try {
-        const doctorId = req.params.doctorId;
-        const doctor = await doctorModel.findById(doctorId);
+// const getAvailableSlots = async (req, res) => {
+//     try {
+//         const { doctorId } = req.params;
 
-        if (!doctor) {
-            return res
-                .status(404)
-                .json({ success: false, message: "Doctor not found" });
-        }
+//         const doctor = await doctorModel.findById(doctorId);
+//         if (!doctor) {
+//             return res
+//                 .status(404)
+//                 .json({ success: false, message: "Doctor not found" });
+//         }
 
-        const startHour = doctor.startTime
-            ? parseInt(doctor.startTime.split(":")[0])
-            : 10;
-        const startMinute = doctor.startTime
-            ? parseInt(doctor.startTime.split(":")[1])
-            : 0;
-        const endHour = doctor.endTime
-            ? parseInt(doctor.endTime.split(":")[0])
-            : 21;
-        const endMinute = doctor.endTime
-            ? parseInt(doctor.endTime.split(":")[1])
-            : 0;
-        const slotDuration = doctor.slotDuration
-            ? parseInt(doctor.slotDuration)
-            : 30;
+//         const today = new Date();
+//         const daysOfWeek = [
+//             "Sunday",
+//             "Monday",
+//             "Tuesday",
+//             "Wednesday",
+//             "Thursday",
+//             "Friday",
+//             "Saturday",
+//         ];
 
-        let today = new Date();
-        let newSlots = [];
+//         const [startHour, startMinute] = doctor.startTime
+//             ? doctor.startTime.split(":").map(Number)
+//             : [10, 0];
 
-        for (let i = 0; i < 7; i++) {
-            let currentDate = new Date(today);
-            currentDate.setDate(today.getDate() + i);
+//         const [endHour, endMinute] = doctor.endTime
+//             ? doctor.endTime.split(":").map(Number)
+//             : [21, 0];
 
-            let dayName = daysOfWeek[currentDate.getDay()];
+//         const slotDuration = doctor.slotDuration
+//             ? parseInt(doctor.slotDuration)
+//             : 30;
 
-            if (
-                !doctor.availableDays ||
-                !doctor.availableDays.includes(dayName)
-            ) {
-                newSlots.push([]);
-                continue;
-            }
+//         let availableSlots = [];
 
-            let slotTimeDate = new Date(currentDate);
-            slotTimeDate.setHours(startHour, startMinute, 0, 0);
+//         for (let i = 0; i < 7; i++) {
+//             let currentDate = new Date(today);
+//             currentDate.setDate(today.getDate() + i);
 
-            let endTimeDate = new Date(currentDate);
-            endTimeDate.setHours(endHour, endMinute, 0, 0);
+//             const dayName = daysOfWeek[currentDate.getDay()];
 
-            if (i === 0) {
-                const now = new Date();
-                if (slotTimeDate < now) {
-                    slotTimeDate = new Date(now.getTime() + 30 * 60000);
-                }
-            }
+//             if (
+//                 !doctor.availableDays ||
+//                 !doctor.availableDays.includes(dayName)
+//             ) {
+//                 availableSlots.push([]);
+//                 continue;
+//             }
 
-            let timeSlots = [];
+//             let slotTimeDate = new Date(currentDate);
+//             slotTimeDate.setHours(startHour, startMinute, 0, 0);
 
-            while (slotTimeDate < endTimeDate) {
-                let formattedTime = slotTimeDate.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                });
+//             let endTimeDate = new Date(currentDate);
+//             endTimeDate.setHours(endHour, endMinute, 0, 0);
 
-                let day = slotTimeDate.getDate();
-                let month = slotTimeDate.getMonth() + 1;
-                let year = slotTimeDate.getFullYear();
-                const slotDate = `${day}_${month}_${year}`;
+//             if (i === 0) {
+//                 const now = new Date();
+//                 if (slotTimeDate < now) {
+//                     slotTimeDate = new Date(now.getTime() + 30 * 60000);
+//                 }
+//             }
 
-                const isSlotAvailable = !(
-                    doctor.slots_booked &&
-                    doctor.slots_booked[slotDate] &&
-                    doctor.slots_booked[slotDate].includes(formattedTime)
-                );
+//             let daySlots = [];
 
-                if (isSlotAvailable) {
-                    timeSlots.push({
-                        datetime: slotTimeDate,
-                        time: formattedTime,
-                    });
-                }
+//             while (slotTimeDate < endTimeDate) {
+//                 let formattedTime = slotTimeDate.toLocaleTimeString([], {
+//                     hour: "2-digit",
+//                     minute: "2-digit",
+//                 });
 
-                slotTimeDate = new Date(
-                    slotTimeDate.getTime() + slotDuration * 60000
-                );
-            }
+//                 let day = slotTimeDate.getDate();
+//                 let month = slotTimeDate.getMonth() + 1;
+//                 let year = slotTimeDate.getFullYear();
 
-            newSlots.push(timeSlots);
-        }
+//                 const slotDate = `${day}_${month}_${year}`;
 
-        res.status(200).json({ success: true, slots: newSlots });
-    } catch (error) {
-        console.error("Error getting available slots:", error);
-        res.status(500).json({
-            success: false,
-            message: "Internal server error",
-        });
-    }
-};
+//                 const isSlotAvailable = !(
+//                     doctor.slots_booked &&
+//                     doctor.slots_booked[slotDate] &&
+//                     doctor.slots_booked[slotDate].includes(formattedTime)
+//                 );
+
+//                 if (isSlotAvailable) {
+//                     daySlots.push({
+//                         datetime: slotTimeDate,
+//                         time: formattedTime,
+//                     });
+//                 }
+
+//                 slotTimeDate = new Date(
+//                     slotTimeDate.getTime() + slotDuration * 60000
+//                 );
+//             }
+
+//             availableSlots.push(daySlots);
+//         }
+
+//         res.json({ success: true, slots: availableSlots });
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ success: false, message: error.message });
+//     }
+// };
+
+
+// const updateSlotsSettings = async (req, res) => {
+//     try {
+//         const doctorId = req.docId;
+//         const { slots_booked } = req.body;
+
+//         const updatedDoctor = await doctorModel.findByIdAndUpdate(
+//             doctorId,
+//             { slots_booked },
+//             { new: true }
+//         );
+
+//         if (!updatedDoctor) {
+//             return res
+//                 .status(404)
+//                 .json({ success: false, message: "Doctor not found" });
+//         }
+
+//         res.json({
+//             success: true,
+//             message: "Slot bookings updated successfully",
+//             doctor: updatedDoctor,
+//         });
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ success: false, message: error.message });
+//     }
+// };
+
 
 
 
@@ -589,5 +623,6 @@ export {
     getDashData,
     doctorProfile,
     updateDoctorProfile,
-    getAvailableSlots,
+    // getAvailableSlots,
+    // updateSlotsSettings,
 };
