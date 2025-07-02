@@ -61,7 +61,7 @@ export default function Testimonial() {
                 {/* Left Arrow */}
                 <button
                     onClick={handlePrev}
-                    className="absolute left-0 md:left-[-40px] lg:left-[-56px] top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100 z-10 text-2xl ml-2"
+                    className="absolute left-0 md:left-[-40px] lg:left-[-56px] top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100 z-10 text-2xl ml-6"
                 >
                     ‹
                 </button>
@@ -108,7 +108,7 @@ export default function Testimonial() {
                 {/* Right Arrow */}
                 <button
                     onClick={handleNext}
-                    className="absolute right-0 md:right-[-40px] lg:right-[-56px] top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100 z-10 text-2xl mr-2"
+                    className="absolute right-0 md:right-[-40px] lg:right-[-56px] top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100 z-10 text-2xl mr-6"
                 >
                     ›
                 </button>

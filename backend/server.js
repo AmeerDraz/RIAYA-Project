@@ -29,7 +29,10 @@ app.get('/',(req,res)=>{
     res.send('API Workink')
 })
 
-app.listen(port, ()=> console.log("server started",port))
+app.listen(port, () => console.log("server started", port))
+
+app.use("/api/doctor", doctorRouter);
+
 
 
 

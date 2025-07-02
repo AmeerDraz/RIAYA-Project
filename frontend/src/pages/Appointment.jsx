@@ -291,78 +291,6 @@ const Appointment = () => {
 
     // Generate available slots excluding booked ones
 
-    const getAvailableSlots = () => {
-        if (!docInfo) return;
-
-        setDocSlots([]);
-        let today = new Date();
-
-        let newSlots = [];
-
-        for (let i = 0; i < 7; i++) {
-            let currentDate = new Date(today);
-            currentDate.setDate(today.getDate() + i);
-
-            let endTime = new Date(today);
-            endTime.setDate(today.getDate() + i);
-            endTime.setHours(21, 0, 0, 0);
-
-            if (today.getDate() === currentDate.getDate()) {
-                currentDate.setHours(
-                    currentDate.getHours() > 10
-                        ? currentDate.getHours() + 1
-                        : 10
-                );
-                currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);
-            } else {
-                currentDate.setHours(10);
-                currentDate.setMinutes(0);
-            }
-
-            let timeSlots = [];
-
-            while (currentDate < endTime) {
-                let formattedTime = currentDate.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                });
-
-                let day = currentDate.getDate();
-                let month = currentDate.getMonth() + 1;
-                let year = currentDate.getFullYear();
-
-                const slotDate = day + "_" + month + "_" + year;
-                const slotTimeCheck = formattedTime;
-
-                const isSlotAvailable =
-                    docInfo.slots_booked &&
-                    docInfo.slots_booked[slotDate] &&
-                    docInfo.slots_booked[slotDate].includes(slotTimeCheck)
-                        ? false
-                        : true;
-
-                if (isSlotAvailable) {
-                    timeSlots.push({
-                        datetime: new Date(currentDate),
-                        time: formattedTime,
-                    });
-                }
-
-                currentDate.setMinutes(currentDate.getMinutes() + 30);
-            }
-
-            newSlots.push(timeSlots);
-        }
-
-        setDocSlots(newSlots);
-        // Reset selection on slots reload
-        setSlotIndex(null);
-        setSlotTime("");
-    };
-
-    //***************************** */
-
-
     // const getAvailableSlots = () => {
     //     if (!docInfo) return;
 
@@ -371,88 +299,156 @@ const Appointment = () => {
 
     //     let newSlots = [];
 
-    //     // إعدادات دوام الطبيب
-    //     const [startHour, startMinute] = docInfo.startTime
-    //         ? docInfo.startTime.split(":").map(Number)
-    //         : [10, 0];
-    //     const [endHour, endMinute] = docInfo.endTime
-    //         ? docInfo.endTime.split(":").map(Number)
-    //         : [21, 0];
-    //     const slotDuration = docInfo.slotDuration
-    //         ? parseInt(docInfo.slotDuration)
-    //         : 30;
-
     //     for (let i = 0; i < 7; i++) {
     //         let currentDate = new Date(today);
     //         currentDate.setDate(today.getDate() + i);
 
-    //         let dayName = daysOfWeek[currentDate.getDay()];
+    //         let endTime = new Date(today);
+    //         endTime.setDate(today.getDate() + i);
+    //         endTime.setHours(21, 0, 0, 0);
 
-    //         // تحقق إذا الطبيب متوفر في هذا اليوم
-    //         if (
-    //             !docInfo.availableDays ||
-    //             !docInfo.availableDays.includes(dayName)
-    //         ) {
-    //             // إذا غير متوفر، اضف قائمة فارغة (لا يوجد مواعيد)
-    //             newSlots.push([]);
-    //             continue;
-    //         }
-
-    //         // بداية الوقت في هذا اليوم
-    //         let slotTimeDate = new Date(currentDate);
-    //         slotTimeDate.setHours(startHour, startMinute, 0, 0);
-
-    //         // وقت النهاية في هذا اليوم
-    //         let endTimeDate = new Date(currentDate);
-    //         endTimeDate.setHours(endHour, endMinute, 0, 0);
-
-    //         // إذا اليوم هو اليوم الحالي، ضف شرط لتجاهل الوقت الذي مضى
-    //         if (i === 0) {
-    //             const now = new Date();
-    //             if (slotTimeDate < now) {
-    //                 slotTimeDate = new Date(now.getTime() + 30 * 60000); // بعد نصف ساعة من الآن
-    //             }
+    //         if (today.getDate() === currentDate.getDate()) {
+    //             currentDate.setHours(
+    //                 currentDate.getHours() > 10
+    //                     ? currentDate.getHours() + 1
+    //                     : 10
+    //             );
+    //             currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);
+    //         } else {
+    //             currentDate.setHours(10);
+    //             currentDate.setMinutes(0);
     //         }
 
     //         let timeSlots = [];
 
-    //         while (slotTimeDate < endTimeDate) {
-    //             let formattedTime = slotTimeDate.toLocaleTimeString([], {
+    //         while (currentDate < endTime) {
+    //             let formattedTime = currentDate.toLocaleTimeString([], {
     //                 hour: "2-digit",
     //                 minute: "2-digit",
     //             });
 
-    //             let day = slotTimeDate.getDate();
-    //             let month = slotTimeDate.getMonth() + 1;
-    //             let year = slotTimeDate.getFullYear();
+    //             let day = currentDate.getDate();
+    //             let month = currentDate.getMonth() + 1;
+    //             let year = currentDate.getFullYear();
 
-    //             const slotDate = `${day}_${month}_${year}`;
+    //             const slotDate = day + "_" + month + "_" + year;
+    //             const slotTimeCheck = formattedTime;
 
-    //             const isSlotAvailable = !(
+    //             const isSlotAvailable =
     //                 docInfo.slots_booked &&
     //                 docInfo.slots_booked[slotDate] &&
-    //                 docInfo.slots_booked[slotDate].includes(formattedTime)
-    //             );
+    //                 docInfo.slots_booked[slotDate].includes(slotTimeCheck)
+    //                     ? false
+    //                     : true;
 
     //             if (isSlotAvailable) {
     //                 timeSlots.push({
-    //                     datetime: new Date(slotTimeDate),
+    //                     datetime: new Date(currentDate),
     //                     time: formattedTime,
     //                 });
     //             }
 
-    //             slotTimeDate = new Date(
-    //                 slotTimeDate.getTime() + slotDuration * 60000
-    //             );
+    //             currentDate.setMinutes(currentDate.getMinutes() + 30);
     //         }
 
     //         newSlots.push(timeSlots);
     //     }
 
     //     setDocSlots(newSlots);
+    //     // Reset selection on slots reload
     //     setSlotIndex(null);
     //     setSlotTime("");
     // };
+
+    //***************************** */
+    const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+    const getAvailableSlots = () => {
+        if (!docInfo || !docInfo.workingHours) return;
+
+        const slotDuration = docInfo.slotDuration || 60;
+        let today = new Date();
+
+        let newSlots = [];
+
+        // دالة تساعد في إيجاد أول تاريخ مستقبلي لليوم المطلوب في الأسبوع (مثلاً أول أربعاء قادم)
+        const getNextDateOfWeekday = (weekday) => {
+            const dayIndex = daysOfWeek.indexOf(weekday);
+            let date = new Date(today);
+            let diff = dayIndex - date.getDay();
+            if (diff < 0) diff += 7;
+            date.setDate(date.getDate() + diff);
+            date.setHours(0, 0, 0, 0);
+            return date;
+        };
+
+        // حلقة تمر على أيام الأسبوع التي يملكها الطبيب في دوام
+        for (const day of daysOfWeek) {
+            if (!docInfo.workingHours[day]) {
+                // هذا اليوم الطبيب لا يعمل به، ارسل مصفوفة فارغة
+                newSlots.push([]);
+                continue;
+            }
+
+            const workingDay = docInfo.workingHours[day];
+            const startTimeStr = workingDay.start;
+            const endTimeStr = workingDay.end;
+
+            const [startHour, startMinute] = startTimeStr
+                .split(":")
+                .map(Number);
+            const [endHour, endMinute] = endTimeStr.split(":").map(Number);
+
+            // احصل على أول تاريخ لهذا اليوم من الأسبوع القادم (مثلاً إذا اليوم الاثنين ونريد الأربعاء)
+            let slotDate = getNextDateOfWeekday(day);
+
+            let slotTimeDate = new Date(slotDate);
+            slotTimeDate.setHours(startHour, startMinute, 0, 0);
+
+            let endTimeDate = new Date(slotDate);
+            endTimeDate.setHours(endHour, endMinute, 0, 0);
+
+            let timeSlots = [];
+
+            while (slotTimeDate < endTimeDate) {
+                let formattedTime = slotTimeDate.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                });
+
+                let dayNum = slotTimeDate.getDate();
+                let month = slotTimeDate.getMonth() + 1;
+                let year = slotTimeDate.getFullYear();
+
+                const slotDateStr = `${dayNum}_${month}_${year}`;
+
+                const isSlotAvailable = !(
+                    docInfo.slots_booked &&
+                    docInfo.slots_booked[slotDateStr] &&
+                    docInfo.slots_booked[slotDateStr].includes(formattedTime)
+                );
+
+                if (isSlotAvailable) {
+                    timeSlots.push({
+                        datetime: new Date(slotTimeDate),
+                        time: formattedTime,
+                    });
+                }
+
+                slotTimeDate = new Date(
+                    slotTimeDate.getTime() + slotDuration * 60000
+                );
+            }
+
+            newSlots.push(timeSlots);
+        }
+
+        setDocSlots(newSlots);
+        setSlotIndex(0);
+        setSlotTime("");
+    };
+
+    
 
     
     

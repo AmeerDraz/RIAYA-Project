@@ -184,7 +184,6 @@
 
 // export default DoctorProfile;
 
-
 // import React, { useContext, useEffect, useState } from "react";
 // import { DoctorContext } from "../../context/DoctorContext";
 // import { AppContext } from "../../context/AppContext";
@@ -370,7 +369,6 @@
 // };
 
 // export default DoctorProfile;
-
 
 // import React, { useContext, useEffect, useState } from "react";
 // import { DoctorContext } from "../../context/DoctorContext";
@@ -701,8 +699,6 @@
 
 // export default DoctorProfile;
 
-
-
 import React, { useContext, useEffect, useState } from "react";
 import { DoctorContext } from "../../context/DoctorContext";
 import { AppContext } from "../../context/AppContext";
@@ -761,63 +757,79 @@ const DoctorProfile = () => {
         }
     };
 
-    // const saveSlotsSettings = async () => {
-    //     try {
-    //         setLoading(true); // ✅ بدء اللودر
-    //         const { data } = await axios.post(
-    //             backendUrl + "/api/doctor/update-slots-settings",
-    //             slotsSettings,
-    //             { headers: { dToken } }
-    //         );
-
-    //         if (data.success) {
-    //             toast.success(data.message);
-    //             await getProfileData();
-    //         } else {
-    //             toast.error(data.message);
-    //         }
-    //     } catch (error) {
-    //         toast.error(error.message);
-    //         console.log(error);
-    //     } finally {
-    //         setLoading(false); // ✅ إيقاف اللودر
-    //     }
-    // };
-
-
-    const saveSlotsSettings = async () => {
+    const updateSlotsSettings = async () => {
         try {
             setLoading(true);
+
+            // Convert workingHours object to array as expected by the backend
+            const formattedWorkingHours = Object.entries(
+                slotsSettings.workingHours
+            ).map(([day, times]) => ({
+                day,
+                start: times.from,
+                end: times.to,
+            }));
+
+            const requestBody = {
+                workingHours: formattedWorkingHours,
+                slotDuration: slotsSettings.slotDuration,
+            };
+
             const { data } = await axios.post(
                 backendUrl + "/api/doctor/update-slots-settings",
-                slotsSettings,
-                { headers: { dToken } }
+                requestBody,
+                {
+                    headers: {
+                        dToken,
+                    },
+                }
             );
 
             if (data.success) {
                 toast.success(data.message);
-                await getProfileData();
-                console.log("Updated profileData:", profileData);
+                await getProfileData(); // Refresh doctor's profile data if needed
+                console.log("Updated slots settings:", data);
             } else {
                 toast.error(data.message);
             }
         } catch (error) {
+            console.error(error);
             toast.error(error.message);
-            console.log(error);
         } finally {
             setLoading(false);
         }
     };
-    
 
+    // useEffect(() => {
+    //     if (profileData) {
+    //         setSlotsSettings({
+    //             workingHours:
+    //                 profileData.workingHours || slotsSettings.workingHours,
+    //             slotDuration:
+    //                 profileData.slotDuration || slotsSettings.slotDuration,
+    //         });
+    //     }
+    // }, [profileData]);
 
     useEffect(() => {
         if (profileData) {
+            let formattedWorkingHours = {};
+
+            // Handle both array and object formats
+            if (Array.isArray(profileData.workingHours)) {
+                profileData.workingHours.forEach((item) => {
+                    formattedWorkingHours[item.day] = {
+                        from: item.start,
+                        to: item.end,
+                    };
+                });
+            } else if (typeof profileData.workingHours === "object") {
+                formattedWorkingHours = { ...profileData.workingHours };
+            }
+
             setSlotsSettings({
-                workingHours:
-                    profileData.workingHours || slotsSettings.workingHours,
-                slotDuration:
-                    profileData.slotDuration || slotsSettings.slotDuration,
+                workingHours: formattedWorkingHours,
+                slotDuration: profileData.slotDuration || 30,
             });
         }
     }, [profileData]);
@@ -843,7 +855,7 @@ const DoctorProfile = () => {
 
     return (
         profileData && (
-            <div className="flex flex-col gap-4 m-5">
+            <div className="flex flex-col gap-4 m-5 h-[90vh] overflow-scroll">
                 {/* ----- صورة واسم الطبيب وبياناته ----- */}
                 <div>
                     <img
@@ -1056,7 +1068,7 @@ const DoctorProfile = () => {
                         </div>
 
                         <button
-                            onClick={saveSlotsSettings}
+                            onClick={updateSlotsSettings}
                             className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/80"
                         >
                             Save Slots Settings

@@ -175,10 +175,7 @@
 //     }
 // };
 
-
-
 // // controllers/doctorController.js
-
 
 // // Helper لتوليد أيام الأسبوع
 // const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -265,7 +262,6 @@
 //     }
 // };
 
-
 // export {
 //     changeAvailablity,
 //     doctorList,
@@ -279,34 +275,262 @@
 //     getAvailableSlots,
 // };
 
+// import jwt from "jsonwebtoken";
+// import doctorModel from "../models/doctorModel.js";
+// import bcrypt from "bcrypt";
+// import appointmentModel from "../models/appointmentModel.js";
+
+// // doctor authentication middleware
+// const authDoctor = async (req, res, next) => {
+//     try {
+//         const { dtoken } = req.headers;
+
+//         if (!dtoken) {
+//             return res.json({
+//                 success: false,
+//                 message: "Not authorized, Login Again",
+//             });
+//         }
+//         const token_decode = jwt.verify(dtoken, process.env.JWT_SECRET);
+//         req.docId = token_decode.id; // احفظ الـ docId هنا في req
+//         next();
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+// // controllers
+
+// const changeAvailablity = async (req, res) => {
+//     try {
+//         const docId = req.docId;
+//         const docData = await doctorModel.findById(docId);
+//         await doctorModel.findByIdAndUpdate(docId, {
+//             available: !docData.available,
+//         });
+//         res.json({
+//             success: true,
+//             message: "Doctor's availability changed successfully",
+//         });
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+// const doctorList = async (req, res) => {
+//     try {
+//         const doctors = await doctorModel
+//             .find({})
+//             .select(["-password", "-email"]);
+//         res.json({ success: true, doctors });
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+// const loginDoctor = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+//         const doctor = await doctorModel.findOne({ email });
+//         if (!doctor) {
+//             return res.json({
+//                 success: false,
+//                 message: "Invalid email or password",
+//             });
+//         }
+//         const isMatch = await bcrypt.compare(password, doctor.password);
+//         if (isMatch) {
+//             const token = jwt.sign({ id: doctor._id }, process.env.JWT_SECRET);
+//             res.json({ success: true, token });
+//         } else {
+//             res.json({ success: false, message: "Invalid email or password" });
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+// const appointmentDoctor = async (req, res) => {
+//     try {
+//         const docId = req.docId;
+//         const appointments = await appointmentModel.find({ docId });
+//         res.json({ success: true, appointments });
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+// const appointmentComplete = async (req, res) => {
+//     try {
+//         const docId = req.docId;
+//         const { appointmentId } = req.body;
+//         const appointmentData = await appointmentModel.findById(appointmentId);
+//         if (appointmentData && appointmentData.docId == docId) {
+//             await appointmentModel.findByIdAndUpdate(appointmentId, {
+//                 isCompleted: true,
+//             });
+//             return res.json({
+//                 success: true,
+//                 message: "Appointment completed",
+//             });
+//         } else {
+//             return res.json({ success: false, message: "Mark failed" });
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+// const appointmentCancel = async (req, res) => {
+//     try {
+//         const docId = req.docId;
+//         const { appointmentId } = req.body;
+//         const appointmentData = await appointmentModel.findById(appointmentId);
+//         if (appointmentData && appointmentData.docId == docId) {
+//             await appointmentModel.findByIdAndUpdate(appointmentId, {
+//                 cancelled: true,
+//             });
+//             return res.json({
+//                 success: true,
+//                 message: "Appointment cancelled",
+//             });
+//         } else {
+//             return res.json({ success: false, message: "Cancel failed" });
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+// const getDashData = async (req, res) => {
+//     try {
+//         const docId = req.docId;
+//         const appointments = await appointmentModel.find({ docId });
+//         let earnings = 0;
+//         appointments.forEach((item) => {
+//             if (item.isCompleted || item.payment) {
+//                 earnings += item.amount;
+//             }
+//         });
+//         let patients = [];
+//         appointments.forEach((item) => {
+//             if (!patients.includes(item.userId)) {
+//                 patients.push(item.userId);
+//             }
+//         });
+
+//         const dashData = {
+//             earnings,
+//             appointments: appointments.length,
+//             patients: patients.length,
+//             latestAppointments: appointments.reverse().slice(0, 5),
+//         };
+//         res.json({ success: true, dashData });
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+// const doctorProfile = async (req, res) => {
+//     try {
+//         const docId = req.docId;
+//         const profileData = await doctorModel
+//             .findById(docId)
+//             .select("-password");
+//         res.json({ success: true, profileData });
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+// const updateDoctorProfile = async (req, res) => {
+//     try {
+//         const docId = req.docId;
+//         const { fees, address, available } = req.body;
+//         await doctorModel.findByIdAndUpdate(docId, {
+//             fees,
+//             address,
+//             available,
+//         });
+//         res.json({ success: true, message: "Profile updated" });
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+
+// const updateSlotsSettings = async (req, res) => {
+//     try {
+//         const docId = req.docId;
+//         const { workingHours, slotDuration } = req.body;
+
+//         if (!workingHours || !slotDuration) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Please fill in all required fields.",
+//             });
+//         }
+
+//         const updatedDoctor = await doctorModel.findByIdAndUpdate(
+//             docId,
+//             { workingHours, slotDuration },
+//             { new: true }
+//         );
+
+//         if (!updatedDoctor) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "Doctor not found.",
+//             });
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Working hours and slot duration updated successfully.",
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({
+//             success: false,
+//             message: "Server error.",
+//         });
+//     }
+// };
+
+
+// // Export all
+// export {
+//     authDoctor,
+//     changeAvailablity,
+//     doctorList,
+//     loginDoctor,
+//     appointmentDoctor,
+//     appointmentComplete,
+//     appointmentCancel,
+//     getDashData,
+//     doctorProfile,
+//     updateDoctorProfile,
+//     // getAvailableSlots,
+//     updateSlotsSettings,
+// };
+
 
 import jwt from "jsonwebtoken";
 import doctorModel from "../models/doctorModel.js";
 import bcrypt from "bcrypt";
 import appointmentModel from "../models/appointmentModel.js";
 
-// doctor authentication middleware
-const authDoctor = async (req, res, next) => {
-    try {
-        const { dtoken } = req.headers;
-
-        if (!dtoken) {
-            return res.json({
-                success: false,
-                message: "Not authorized, Login Again",
-            });
-        }
-        const token_decode = jwt.verify(dtoken, process.env.JWT_SECRET);
-        req.docId = token_decode.id; // احفظ الـ docId هنا في req
-        next();
-    } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: error.message });
-    }
-};
-
-// controllers
-
+// Change Doctor Availability
 const changeAvailablity = async (req, res) => {
     try {
         const docId = req.docId;
@@ -324,6 +548,7 @@ const changeAvailablity = async (req, res) => {
     }
 };
 
+// Doctor List
 const doctorList = async (req, res) => {
     try {
         const doctors = await doctorModel
@@ -336,6 +561,7 @@ const doctorList = async (req, res) => {
     }
 };
 
+// Doctor Login
 const loginDoctor = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -359,6 +585,7 @@ const loginDoctor = async (req, res) => {
     }
 };
 
+// Get Doctor's Appointments
 const appointmentDoctor = async (req, res) => {
     try {
         const docId = req.docId;
@@ -370,6 +597,7 @@ const appointmentDoctor = async (req, res) => {
     }
 };
 
+// Complete Appointment
 const appointmentComplete = async (req, res) => {
     try {
         const docId = req.docId;
@@ -392,6 +620,7 @@ const appointmentComplete = async (req, res) => {
     }
 };
 
+// Cancel Appointment
 const appointmentCancel = async (req, res) => {
     try {
         const docId = req.docId;
@@ -414,21 +643,18 @@ const appointmentCancel = async (req, res) => {
     }
 };
 
+// Doctor Dashboard Data
 const getDashData = async (req, res) => {
     try {
         const docId = req.docId;
         const appointments = await appointmentModel.find({ docId });
+
         let earnings = 0;
-        appointments.forEach((item) => {
-            if (item.isCompleted || item.payment) {
-                earnings += item.amount;
-            }
-        });
         let patients = [];
+
         appointments.forEach((item) => {
-            if (!patients.includes(item.userId)) {
-                patients.push(item.userId);
-            }
+            if (item.isCompleted || item.payment) earnings += item.amount;
+            if (!patients.includes(item.userId)) patients.push(item.userId);
         });
 
         const dashData = {
@@ -437,6 +663,7 @@ const getDashData = async (req, res) => {
             patients: patients.length,
             latestAppointments: appointments.reverse().slice(0, 5),
         };
+
         res.json({ success: true, dashData });
     } catch (error) {
         console.log(error);
@@ -444,6 +671,7 @@ const getDashData = async (req, res) => {
     }
 };
 
+// Get Doctor Profile
 const doctorProfile = async (req, res) => {
     try {
         const docId = req.docId;
@@ -457,6 +685,7 @@ const doctorProfile = async (req, res) => {
     }
 };
 
+// Update Doctor Profile
 const updateDoctorProfile = async (req, res) => {
     try {
         const docId = req.docId;
@@ -473,147 +702,106 @@ const updateDoctorProfile = async (req, res) => {
     }
 };
 
+// Update Working Hours and Slot Duration
+const updateSlotsSettings = async (req, res) => {
+    try {
+        const docId = req.docId;
+        const { workingHours, slotDuration } = req.body;
 
-// const getAvailableSlots = async (req, res) => {
-//     try {
-//         const { doctorId } = req.params;
+        if (!workingHours || !slotDuration) {
+            return res.status(400).json({
+                success: false,
+                message: "Please fill in all required fields.",
+            });
+        }
 
-//         const doctor = await doctorModel.findById(doctorId);
-//         if (!doctor) {
-//             return res
-//                 .status(404)
-//                 .json({ success: false, message: "Doctor not found" });
-//         }
+        const updatedDoctor = await doctorModel.findByIdAndUpdate(
+            docId,
+            { workingHours, slotDuration },
+            { new: true }
+        );
 
-//         const today = new Date();
-//         const daysOfWeek = [
-//             "Sunday",
-//             "Monday",
-//             "Tuesday",
-//             "Wednesday",
-//             "Thursday",
-//             "Friday",
-//             "Saturday",
-//         ];
+        if (!updatedDoctor) {
+            return res.status(404).json({
+                success: false,
+                message: "Doctor not found.",
+            });
+        }
 
-//         const [startHour, startMinute] = doctor.startTime
-//             ? doctor.startTime.split(":").map(Number)
-//             : [10, 0];
-
-//         const [endHour, endMinute] = doctor.endTime
-//             ? doctor.endTime.split(":").map(Number)
-//             : [21, 0];
-
-//         const slotDuration = doctor.slotDuration
-//             ? parseInt(doctor.slotDuration)
-//             : 30;
-
-//         let availableSlots = [];
-
-//         for (let i = 0; i < 7; i++) {
-//             let currentDate = new Date(today);
-//             currentDate.setDate(today.getDate() + i);
-
-//             const dayName = daysOfWeek[currentDate.getDay()];
-
-//             if (
-//                 !doctor.availableDays ||
-//                 !doctor.availableDays.includes(dayName)
-//             ) {
-//                 availableSlots.push([]);
-//                 continue;
-//             }
-
-//             let slotTimeDate = new Date(currentDate);
-//             slotTimeDate.setHours(startHour, startMinute, 0, 0);
-
-//             let endTimeDate = new Date(currentDate);
-//             endTimeDate.setHours(endHour, endMinute, 0, 0);
-
-//             if (i === 0) {
-//                 const now = new Date();
-//                 if (slotTimeDate < now) {
-//                     slotTimeDate = new Date(now.getTime() + 30 * 60000);
-//                 }
-//             }
-
-//             let daySlots = [];
-
-//             while (slotTimeDate < endTimeDate) {
-//                 let formattedTime = slotTimeDate.toLocaleTimeString([], {
-//                     hour: "2-digit",
-//                     minute: "2-digit",
-//                 });
-
-//                 let day = slotTimeDate.getDate();
-//                 let month = slotTimeDate.getMonth() + 1;
-//                 let year = slotTimeDate.getFullYear();
-
-//                 const slotDate = `${day}_${month}_${year}`;
-
-//                 const isSlotAvailable = !(
-//                     doctor.slots_booked &&
-//                     doctor.slots_booked[slotDate] &&
-//                     doctor.slots_booked[slotDate].includes(formattedTime)
-//                 );
-
-//                 if (isSlotAvailable) {
-//                     daySlots.push({
-//                         datetime: slotTimeDate,
-//                         time: formattedTime,
-//                     });
-//                 }
-
-//                 slotTimeDate = new Date(
-//                     slotTimeDate.getTime() + slotDuration * 60000
-//                 );
-//             }
-
-//             availableSlots.push(daySlots);
-//         }
-
-//         res.json({ success: true, slots: availableSlots });
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ success: false, message: error.message });
-//     }
-// };
+        res.status(200).json({
+            success: true,
+            message: "Working hours and slot duration updated successfully.",
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Server error.",
+        });
+    }
+};
 
 
-// const updateSlotsSettings = async (req, res) => {
-//     try {
-//         const doctorId = req.docId;
-//         const { slots_booked } = req.body;
+const getAvailableSlots = async (req, res) => {
+    try {
+        const docId = req.docId; // أو: req.params.docId إذا مررت المعرف في الرابط
 
-//         const updatedDoctor = await doctorModel.findByIdAndUpdate(
-//             doctorId,
-//             { slots_booked },
-//             { new: true }
-//         );
+        const doctor = await doctorModel.findById(docId);
 
-//         if (!updatedDoctor) {
-//             return res
-//                 .status(404)
-//                 .json({ success: false, message: "Doctor not found" });
-//         }
+        if (!doctor) {
+            return res
+                .status(404)
+                .json({ success: false, message: "Doctor not found" });
+        }
 
-//         res.json({
-//             success: true,
-//             message: "Slot bookings updated successfully",
-//             doctor: updatedDoctor,
-//         });
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ success: false, message: error.message });
-//     }
-// };
+        const { workingHours, slotDuration } = doctor;
 
+        if (!workingHours || !slotDuration) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Working hours or slot duration not set",
+                });
+        }
 
+        // تحويل وقت مثل "09:00" إلى دقائق من بداية اليوم
+        const toMinutes = (timeStr) => {
+            const [hours, minutes] = timeStr.split(":").map(Number);
+            return hours * 60 + minutes;
+        };
 
+        const startMinutes = toMinutes(
+            workingHours.startTime || workingHours.start || "09:00"
+        );
+        const endMinutes = toMinutes(
+            workingHours.endTime || workingHours.end || "17:00"
+        );
 
-// Export all
+        let slots = [];
+        for (
+            let time = startMinutes;
+            time + slotDuration <= endMinutes;
+            time += slotDuration
+        ) {
+            const hour = Math.floor(time / 60)
+                .toString()
+                .padStart(2, "0");
+            const minute = (time % 60).toString().padStart(2, "0");
+            slots.push(`${hour}:${minute}`);
+        }
+
+        // يمكنك إضافة هنا تحقق من المواعيد المحجوزة وإزالة المواعيد المحجوزة من slots
+
+        res.json({ success: true, slots });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+// Export Controllers
 export {
-    authDoctor,
     changeAvailablity,
     doctorList,
     loginDoctor,
@@ -623,6 +811,6 @@ export {
     getDashData,
     doctorProfile,
     updateDoctorProfile,
-    // getAvailableSlots,
-    // updateSlotsSettings,
+    updateSlotsSettings,
+    getAvailableSlots,
 };
