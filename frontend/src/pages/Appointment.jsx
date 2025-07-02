@@ -361,52 +361,58 @@ const Appointment = () => {
     // };
 
     //***************************** */
-    const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-
     const getAvailableSlots = () => {
-        if (!docInfo || !docInfo.workingHours) return;
+        if (!docInfo) return;
 
-        const slotDuration = docInfo.slotDuration || 60;
+        setDocSlots([]);
+
+        const daysOfWeekFull = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+        ];
+
         let today = new Date();
 
         let newSlots = [];
 
-        // دالة تساعد في إيجاد أول تاريخ مستقبلي لليوم المطلوب في الأسبوع (مثلاً أول أربعاء قادم)
-        const getNextDateOfWeekday = (weekday) => {
-            const dayIndex = daysOfWeek.indexOf(weekday);
-            let date = new Date(today);
-            let diff = dayIndex - date.getDay();
-            if (diff < 0) diff += 7;
-            date.setDate(date.getDate() + diff);
-            date.setHours(0, 0, 0, 0);
-            return date;
-        };
+        const startTimeStr = docInfo.workingHours?.startTime || "10:00";
+        const endTimeStr = docInfo.workingHours?.endTime || "21:00";
+        const availableDays =
+            docInfo.workingHours?.availableDays || daysOfWeekFull;
+        const slotDuration = docInfo.slotDuration || 30;
 
-        // حلقة تمر على أيام الأسبوع التي يملكها الطبيب في دوام
-        for (const day of daysOfWeek) {
-            if (!docInfo.workingHours[day]) {
-                // هذا اليوم الطبيب لا يعمل به، ارسل مصفوفة فارغة
+        const [startHour, startMinute] = startTimeStr.split(":").map(Number);
+        const [endHour, endMinute] = endTimeStr.split(":").map(Number);
+
+        for (let i = 0; i < 7; i++) {
+            let currentDate = new Date(today);
+            currentDate.setDate(today.getDate() + i);
+
+            let dayName = daysOfWeekFull[currentDate.getDay()];
+
+            if (!availableDays.includes(dayName)) {
                 newSlots.push([]);
                 continue;
             }
 
-            const workingDay = docInfo.workingHours[day];
-            const startTimeStr = workingDay.start;
-            const endTimeStr = workingDay.end;
-
-            const [startHour, startMinute] = startTimeStr
-                .split(":")
-                .map(Number);
-            const [endHour, endMinute] = endTimeStr.split(":").map(Number);
-
-            // احصل على أول تاريخ لهذا اليوم من الأسبوع القادم (مثلاً إذا اليوم الاثنين ونريد الأربعاء)
-            let slotDate = getNextDateOfWeekday(day);
-
-            let slotTimeDate = new Date(slotDate);
+            let slotTimeDate = new Date(currentDate);
             slotTimeDate.setHours(startHour, startMinute, 0, 0);
 
-            let endTimeDate = new Date(slotDate);
+            let endTimeDate = new Date(currentDate);
             endTimeDate.setHours(endHour, endMinute, 0, 0);
+
+            // يوم العمل الحالي، لا تُظهر مواعيد قبل الآن + 30 دقيقة
+            if (i === 0) {
+                const now = new Date();
+                if (slotTimeDate < now) {
+                    slotTimeDate = new Date(now.getTime() + 30 * 60000);
+                }
+            }
 
             let timeSlots = [];
 
@@ -416,16 +422,16 @@ const Appointment = () => {
                     minute: "2-digit",
                 });
 
-                let dayNum = slotTimeDate.getDate();
+                let day = slotTimeDate.getDate();
                 let month = slotTimeDate.getMonth() + 1;
                 let year = slotTimeDate.getFullYear();
 
-                const slotDateStr = `${dayNum}_${month}_${year}`;
+                const slotDate = `${day}_${month}_${year}`;
 
                 const isSlotAvailable = !(
                     docInfo.slots_booked &&
-                    docInfo.slots_booked[slotDateStr] &&
-                    docInfo.slots_booked[slotDateStr].includes(formattedTime)
+                    docInfo.slots_booked[slotDate] &&
+                    docInfo.slots_booked[slotDate].includes(formattedTime)
                 );
 
                 if (isSlotAvailable) {
@@ -444,10 +450,9 @@ const Appointment = () => {
         }
 
         setDocSlots(newSlots);
-        setSlotIndex(0);
+        setSlotIndex(null);
         setSlotTime("");
     };
-
     
 
     
