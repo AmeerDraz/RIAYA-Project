@@ -1,292 +1,3 @@
-// import validator from "validator";
-// import bcrypt from "bcrypt";
-// import userModel from "../models/userModel.js";
-// import jwt from "jsonwebtoken";
-// import { v2 as cloudinary } from "cloudinary";
-// import doctorModel from "../models/doctorModel.js";
-// import appointmentModel from "../models/appointmentModel.js";
-// import razorpay from "razorpay";
-
-// //API to register user
-
-// const registerUser = async (req, res) => {
-//     try {
-//         const { name, email, password } = req.body;
-//         if (!name || !password || !email) {
-//             return res.json({ success: false, message: "Missing Details" });
-//         }
-
-//         if (!validator.isEmail(email)) {
-//             return res.json({
-//                 success: false,
-//                 message: " Enter a valid email",
-//             });
-//         }
-
-//         if (password.length < 8) {
-//             return res.json({
-//                 success: false,
-//                 message: "Enter a strong Password",
-//             });
-//         }
-
-//         //hasing user password
-//         const salt = await bcrypt.genSalt(10);
-//         const hashedPassword = await bcrypt.hash(password, salt);
-
-//         const userData = {
-//             name,
-//             email,
-//             password: hashedPassword,
-//         };
-//         //saving user data to database
-//         const newUser = new userModel(userData);
-//         const user = await newUser.save();
-//         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-//         res.json({ success: true, token });
-//     } catch (error) {
-//         console.log(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
-// // API FOR USER LOGIN
-// const loginUser = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-//         const user = await userModel.findOne({ email });
-//         if (!user) {
-//             return res.json({ success: false, message: "user not exist" });
-//         }
-//         const isMatch = await bcrypt.compare(password, user.password);
-
-//         if (isMatch) {
-//             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-//             res.json({ success: true, token });
-//         } else {
-//             res.json({ success: false, message: "Invalid email or password" });
-//         }
-//     } catch (error) {
-//         console.log(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
-// //API for get user profile data
-
-// const getProfile = async (req, res) => {
-//     try {
-//         // const {userId} = req.body
-//         const userId = req.userId;
-//         const userData = await userModel.findById(userId).select("-password");
-//         res.json({ success: true, userData });
-//     } catch (error) {
-//         console.log(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
-// //update user profile
-// const updateProfile = async (req, res) => {
-//     try {
-//         const { userId, name, phone, address, dob, gender } = req.body;
-//         const imageFile = req.file;
-
-//         if (!name || !phone || !dob || !gender) {
-//             return res.json({ success: false, message: "DATA MISING" });
-//         }
-//         await userModel.findByIdAndUpdate(userId, {
-//             name,
-//             phone,
-//             address: JSON.parse(address),
-//             dob,
-//             gender,
-//         });
-
-//         if (imageFile) {
-//             //uploade imge clodinary
-//             const imageUpload = await cloudinary.uploader.upload(
-//                 imageFile.path,
-//                 { resource_type: "image" }
-//             );
-//             const imageUrl = imageUpload.secure_url;
-
-//             await userModel.findByIdAndUpdate(userId, { image: imageUrl });
-//         }
-
-//         res.json({ success: true, message: "Profile Updated" });
-//     } catch (error) {
-//         console.log(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
-// //API to book appointment
-
-// const bookAppointment = async (req, res) => {
-//     try {
-//         const { userId, docId, slotData, slotTime } = req.body;
-
-//         const docData = await doctorModel.findById(docId).select("-password");
-
-//         if (!docData.available) {
-//             return res.json({
-//                 success: false,
-//                 message: "doctor not available",
-//             });
-//         }
-//         let slots_booked = docData.slots_booked;
-
-//         // checking for slot availablity
-//         if (slots_booked[slotData]) {
-//             if (slots_booked[slotData].includes(slotTime)) {
-//                 return res.json({
-//                     success: false,
-//                     message: "slot not availabile",
-//                 });
-//             } else {
-//                 slots_booked[slotData].push(slotTime);
-//             }
-//         } else {
-//             slots_booked[slotData] = [];
-//             slots_booked[slotData].push(slotTime);
-//         }
-
-//         const userData = await userModel.findById(userId).select("-password");
-//         delete docData.slots_booked;
-
-//         const appointmentData = {
-//             userId,
-//             docId,
-//             userData,
-//             docData,
-//             amount: docData,
-//             fees,
-//             slotTime,
-//             slotData,
-//             date: Date.now(),
-//         };
-
-//         const newAppointment = new appointmentModel(appointmentData);
-//         await newAppointment.save();
-
-//         //save new slot data in docData
-
-//         await doctorModel.findByIdAndUpdate(docId, { slots_booked });
-
-//         res.json({ success: true, message: "appointment booked" });
-//     } catch (error) {
-//         console.log(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
-// // API for get user appointment for frontend my-appointment page
-
-// const listAppointment = async (req, res) => {
-//     try {
-//         const { userId } = res.body;
-//         const appointments = await appointmentModel.find({ userId });
-//         res.json({ success: true, appointments });
-//     } catch (error) {
-//         console.log(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
-// //API to cancel Appointment
-// const cancelAppointment = async (req, res) => {
-//     try {
-//         const { userId, appointmentId } = req.body;
-//         const appointmentData = await appointmentModel.findById(appointmentId);
-//         //vairyfie appointment user
-//         if (appointmentData.userId !== userId) {
-//             return res.json({ success: false, message: "unautherize action" });
-//         }
-//         await appointmentModel.findByIdAndUpdate(appointmentId, {
-//             cancelled: true,
-//         });
-//         const { docId, slotData, slotTime } = appointmentData;
-//         const doctorDate = await doctorModel.findById(docId);
-//         let slots_booked = doctorDate.slots_booked;
-//         slots_booked[slotData] = slots_booked[slotData].filter(
-//             (e) => e !== slotTime
-//         );
-//         await doctorModel.findByIdAndUpdate(docId, { slots_booked });
-//         res.json({ success: true, message: "appointment cancelld" });
-//     } catch (error) {
-//         console.log(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
-// const razorpayInstance = new razorpay({
-//     key_id: process.env.RAZORPAY_KEY_ID,
-//     key_secret: process.env.RAZORPAY_KEY_SECRET,
-// });
-// // online payment
-
-// const paymentRazorpay = async (req, res) => {
-//     try {
-//         const { appointmentId } = req.body;
-//         const appointmentData = await appointmentModel.findById(appointmentId);
-//         if (!appointmentData || appointmentData.cancelled) {
-//             res.json({
-//                 success: false,
-//                 message: "appointment cancelled or not found",
-//             });
-//         }
-
-//         //create option payment
-
-//         const options = {
-//             amount: appointmentData.amount * 100,
-//             currency: process.env.CURRENCY,
-//             receipt: appointmentId,
-//         };
-
-//         //creation an order
-//         const order = await razorpayInstance.orders.create(options);
-//         res.json({ success: true, order });
-//     } catch (error) {
-//         console.log(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
-// //API to verify payment of razorpay
-// const verifyRazorpay = async (req, res) => {
-//     try {
-//         const { razorpay_order_id } = req.body;
-//         const orderInfo = await razorpayInstance.orders.fetch(
-//             razorpay_order_id
-//         );
-//         if (orderInfo.status === "paid") {
-//             await appointmentModel.findByIdAndUpdate(orderInfo.receipt, {
-//                 payment: true,
-//             });
-//             res.json({ success: true, message: "payment successful" });
-//         } else {
-//             res.json({ success: false, message: "payment failed" });
-//         }
-//     } catch (error) {
-//         console.log(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
-// export {
-//     registerUser,
-//     loginUser,
-//     getProfile,
-//     updateProfile,
-//     bookAppointment,
-//     listAppointment,
-//     cancelAppointment,
-//     paymentRazorpay,
-//     verifyRazorpay,
-// };
-
 import validator from "validator";
 import bcrypt from "bcrypt";
 import { userModel, UserStatus } from "../models/userModel.js";
@@ -592,6 +303,190 @@ const verifyRazorpay = async (req, res) => {
     }
 };
 
+// Get available slots for a specific doctor (public endpoint)
+const getDoctorAvailableSlots = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+
+        const doctor = await doctorModel.findById(doctorId);
+
+        if (!doctor) {
+            return res
+                .status(404)
+                .json({ success: false, message: "Doctor not found" });
+        }
+
+        const { workingHours, slotDuration } = doctor;
+
+        console.log('=== Get Doctor Available Slots Debug ===');
+        console.log('Doctor ID:', doctorId);
+        console.log('Doctor found:', !!doctor);
+        console.log('Working Hours:', workingHours);
+        console.log('Slot Duration:', slotDuration);
+        console.log('Doctor data:', {
+            name: doctor.name,
+            speciality: doctor.speciality,
+            image: doctor.image,
+            about: doctor.about,
+            available: doctor.available
+        });
+
+        // If no working hours set, return basic info with empty slots
+        if (!workingHours || Object.keys(workingHours).length === 0) {
+            console.log('No working hours set for doctor');
+            return res.json({
+                success: true,
+                slots: Array(7).fill([]),
+                workingHours: {},
+                slotDuration: 30,
+                doctorInfo: {
+                    _id: doctor._id,
+                    name: doctor.name,
+                    speciality: doctor.speciality,
+                    degree: doctor.degree,
+                    experience: doctor.experience,
+                    fees: doctor.fees,
+                    available: doctor.available,
+                    image: doctor.image,
+                    about: doctor.about
+                }
+            });
+        }
+
+        if (!slotDuration) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Slot duration not set",
+                });
+        }
+
+        // Convert time string to minutes
+        const toMinutes = (timeStr) => {
+            const [hours, minutes] = timeStr.split(":").map(Number);
+            return hours * 60 + minutes;
+        };
+
+        // Convert minutes to time string
+        const toTimeString = (minutes) => {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+        };
+
+        // Get current date and generate slots for next 7 days
+        const today = new Date();
+        const slots = [];
+
+        for (let i = 0; i < 7; i++) {
+            const currentDate = new Date(today);
+            currentDate.setDate(today.getDate() + i);
+            
+            const dayOfWeek = currentDate.getDay();
+            const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            const dayKey = dayNames[dayOfWeek];
+            
+            const daySchedule = workingHours[dayKey];
+            
+            if (!daySchedule || (daySchedule.enabled !== undefined && !daySchedule.enabled)) {
+                slots.push([]);
+                continue;
+            }
+
+            const startMinutes = toMinutes(daySchedule.from);
+            const endMinutes = toMinutes(daySchedule.to);
+            
+            let daySlots = [];
+            
+            // Generate slots for this day
+            for (let time = startMinutes; time + slotDuration <= endMinutes; time += slotDuration) {
+                const slotTime = toTimeString(time);
+                
+                // Check if this slot is booked
+                const day = currentDate.getDate();
+                const month = currentDate.getMonth() + 1;
+                const year = currentDate.getFullYear();
+                const slotDate = `${day}_${month}_${year}`;
+                
+                const isSlotBooked = doctor.slots_booked && 
+                    doctor.slots_booked[slotDate] && 
+                    doctor.slots_booked[slotDate].includes(slotTime);
+                
+                if (!isSlotBooked) {
+                    daySlots.push({
+                        time: slotTime,
+                        date: new Date(currentDate),
+                        dayName: dayKey
+                    });
+                }
+            }
+            
+            // For today, filter out past slots
+            if (i === 0) {
+                const now = new Date();
+                const currentTime = now.getHours() * 60 + now.getMinutes();
+                daySlots = daySlots.filter(slot => {
+                    const slotMinutes = toMinutes(slot.time);
+                    return slotMinutes > currentTime + 30; // 30 minutes buffer
+                });
+            }
+            
+            slots.push(daySlots);
+        }
+
+        console.log('Generated slots:', slots.map((day, i) => `${i}: ${day.length} slots`));
+
+        res.json({ 
+            success: true, 
+            slots,
+            workingHours,
+            slotDuration,
+            doctorInfo: {
+                _id: doctor._id,
+                name: doctor.name,
+                speciality: doctor.speciality,
+                degree: doctor.degree,
+                experience: doctor.experience,
+                fees: doctor.fees,
+                available: doctor.available,
+                image: doctor.image,
+                about: doctor.about
+            }
+        });
+    } catch (error) {
+        console.error('Error in getDoctorAvailableSlots:', error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+// Test endpoint to check all doctors and their working hours
+const testDoctors = async (req, res) => {
+    try {
+        const doctors = await doctorModel.find({});
+        
+        const doctorsInfo = doctors.map(doctor => ({
+            _id: doctor._id,
+            name: doctor.name,
+            speciality: doctor.speciality,
+            hasWorkingHours: !!(doctor.workingHours && Object.keys(doctor.workingHours).length > 0),
+            hasSlotDuration: !!doctor.slotDuration,
+            workingHours: doctor.workingHours,
+            slotDuration: doctor.slotDuration,
+            available: doctor.available
+        }));
+        
+        res.json({
+            success: true,
+            totalDoctors: doctors.length,
+            doctors: doctorsInfo
+        });
+    } catch (error) {
+        console.error('Error in testDoctors:', error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
 export {
     registerUser,
     loginUser,
@@ -602,4 +497,6 @@ export {
     cancelAppointment,
     paymentRazorpay,
     verifyRazorpay,
+    getDoctorAvailableSlots,
+    testDoctors,
 };

@@ -199,10 +199,12 @@
 // export default DoctorsList;
 
 import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { AdminContext } from "../../context/AdminContext";
 import Loader from "../../components/Loader";
 
 const DoctorsList = () => {
+    const navigate = useNavigate();
     const {
         doctors,
         aToken,
@@ -269,6 +271,20 @@ const DoctorsList = () => {
                                     checked={item.available}
                                 />
                                 <p>Available</p>
+                            </div>
+                            <div className="mt-3 flex space-x-2">
+                                <button
+                                    onClick={() => navigate(`/edit-doctor/${item._id}`)}
+                                    className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                                >
+                                    Edit Profile
+                                </button>
+                                <button
+                                    onClick={() => navigate(`/view-doctor/${item._id}`)}
+                                    className="px-3 py-1 border border-gray-300 text-gray-700 text-xs rounded hover:bg-gray-50 transition-colors"
+                                >
+                                    View Profile
+                                </button>
                             </div>
                         </div>
                     </div>

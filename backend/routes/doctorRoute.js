@@ -71,7 +71,9 @@ import {
     loginDoctor,
     updateDoctorProfile,
     updateSlotsSettings,
-    getAvailableSlots, // <-- استورد الدالة الجديدة
+    getAvailableSlots,
+    testDoctorData,
+    resetWorkingHours,
 } from "../controllers/doctorController.js";
 import authDoctor from "../middlewares/authDoctor.js";
 
@@ -88,4 +90,6 @@ doctorRouter.post("/update-profile", authDoctor, updateDoctorProfile);
 doctorRouter.post("/update-slots-settings", authDoctor, updateSlotsSettings);
 
 doctorRouter.get("/available-slots/:docId", authDoctor, getAvailableSlots);
+doctorRouter.get("/test-data", authDoctor, testDoctorData);
+doctorRouter.post("/reset-working-hours", authDoctor, resetWorkingHours);
 export default doctorRouter;

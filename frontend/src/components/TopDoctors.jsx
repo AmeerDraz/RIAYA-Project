@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
+import { assets } from "../assets/assets";
 
 const TopDoctors = () => {
     const navigate = useNavigate();
@@ -24,8 +25,11 @@ const TopDoctors = () => {
                     >
                         <img
                             className="bg-green-50  h-[220px] w-[260px] object-cover object-top "
-                            src={item.image}
-                            alt=""
+                            src={item.image && item.image.trim() !== "" ? item.image : assets.doctor_icon}
+                            alt={item.name || "Doctor"}
+                            onError={(e) => {
+                                e.target.src = assets.doctor_icon;
+                            }}
                         />
                         <div className="p-4">
                             <div

@@ -367,6 +367,107 @@ const changeAvailapility = async (req, res) => {
 
 
 
+// Get single doctor by ID
+const getDoctorById = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+        const doctor = await doctorModel.findById(doctorId).select("-password");
+        
+        if (!doctor) {
+            return res.status(404).json({
+                success: false,
+                message: "Doctor not found",
+            });
+        }
+
+        res.json({
+            success: true,
+            doctor,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Update doctor profile
+const updateDoctorProfile = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+        const updateData = req.body;
+
+        // Remove sensitive fields that shouldn't be updated
+        const { password, email, image, ...safeUpdateData } = updateData;
+
+        const updatedDoctor = await doctorModel.findByIdAndUpdate(
+            doctorId,
+            safeUpdateData,
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedDoctor) {
+            return res.status(404).json({
+                success: false,
+                message: "Doctor not found",
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Doctor profile updated successfully",
+            doctor: updatedDoctor,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Get doctor working hours
+const getDoctorWorkingHours = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+        const doctor = await doctorModel.findById(doctorId);
+        
+        if (!doctor) {
+            return res.json({ success: false, message: "Doctor not found" });
+        }
+
+        res.json({
+            success: true,
+            workingHours: doctor.workingHours || {},
+            slotDuration: doctor.slotDuration || 30,
+            doctorName: doctor.name
+        });
+    } catch (error) {
+        console.error('Error getting doctor working hours:', error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+// Update doctor working hours
+const updateDoctorWorkingHours = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+        const { workingHours, slotDuration } = req.body;
+
+        const doctor = await doctorModel.findById(doctorId);
+        if (!doctor) {
+            return res.json({ success: false, message: "Doctor not found" });
+        }
+
+        await doctorModel.findByIdAndUpdate(doctorId, {
+            workingHours,
+            slotDuration
+        });
+
+        res.json({ success: true, message: "Working hours updated successfully" });
+    } catch (error) {
+        console.error('Error updating doctor working hours:', error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
 export {
     addDoctor,
     loginAdmin,
@@ -375,4 +476,8 @@ export {
     cancelAppointment,
     adminDashboard,
     changeAvailapility,
+    getDoctorById,
+    updateDoctorProfile,
+    getDoctorWorkingHours,
+    updateDoctorWorkingHours,
 };

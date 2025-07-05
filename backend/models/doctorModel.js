@@ -39,8 +39,23 @@ const doctorSchema = new mongoose.Schema(
         address: { type: Object, required: true },
         date: { type: Number, required: true },
         slots_booked: { type: Object, default: {} },
-        workingHours: { type: Object, default: {} },
-        slotDuration: { type: Number, default: 15 },
+        workingHours: { 
+            type: Object, 
+            default: {},
+            // Ensure it's a proper object structure
+            validate: {
+                validator: function(v) {
+                    return typeof v === 'object' && v !== null;
+                },
+                message: 'Working hours must be an object'
+            }
+        },
+        slotDuration: { 
+            type: Number, 
+            default: 30,
+            min: 15,
+            max: 120
+        },
     },
     { minimize: false }
 );
