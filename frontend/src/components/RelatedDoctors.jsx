@@ -1,14 +1,108 @@
+// import React, { useContext, useEffect, useState } from "react";
+
+// import { AppContext } from "../context/AppContext";
+// import { useNavigate } from "react-router-dom";
+
+// const RelatedDoctors = ({ speciality, docId }) => {
+//     const { doctors, currencySymbol } = useContext(AppContext);
+//     const navigate = useNavigate();
+
+//     const [relDoc, setRelDoc] = useState([]);
+
+//     useEffect(() => {
+//         if (doctors.length > 0 && speciality) {
+//             const doctorsData = doctors.filter(
+//                 (doc) => doc.speciality === speciality && doc._id !== docId
+//             );
+//             setRelDoc(doctorsData);
+//         }
+//     }, [doctors, speciality, docId]);
+
+//     return (
+//         <div className="flex flex-col items-center gap-4 my-10 text-gray-900 md:mx-10">
+//             <h1 className="text-3xl font-medium">Related Doctors</h1>
+//             <p className="sm:w-1/3 text-center text-sm">
+//                 Simply browse through our extensive list of trusted doctors.
+//             </p>
+//             <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 pt-5 gap-y-6 px-3 sm:px-0">
+//                 {relDoc.slice(0, 5).map((item, index) => (
+//                     <div
+//                         onClick={() => {
+//                             navigate(`/appointment/${item._id}`);
+//                             scrollTo(0, 0);
+//                         }}
+//                         className="border border-green-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
+//                         key={index}
+//                     >
+//                         <img
+//                             className="bg-green-50  h-[220px] w-[260px] object-cover object-top "
+//                             src={item.image}
+//                             alt=""
+//                         />
+//                         <div className="p-4">
+//                             <div
+//                                 className={`flex items-center gap-2 text-sm text-center ${
+//                                     item.available
+//                                         ? "text-green-500"
+//                                         : "text-gray-500"
+//                                 } `}
+//                             >
+//                                 <p
+//                                     className={`w-2 h-2 ${
+//                                         item.available
+//                                             ? "bg-green-500"
+//                                             : "bg-gray-500"
+//                                     }  rounded-full`}
+//                                 ></p>
+//                                 <p>
+//                                     {item.available
+//                                         ? "Available"
+//                                         : "Not Available"}
+//                                 </p>
+//                             </div>
+//                             <div className="flex justify-between">
+//                                 <div>
+//                                     <p className="text-gray-900 text-lg font-medium">
+//                                         {item.name}
+//                                     </p>
+//                                     <p className="text-gray-600 text-sm">
+//                                         {item.speciality}
+//                                     </p>
+//                                 </div>
+
+//                                 <p className="text-lg font-bold text-green-500 ">
+//                                     {currencySymbol} {item.fees}
+//                                 </p>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 ))}
+//             </div>
+//             <button
+//                 onClick={() => {
+//                     navigate("/doctors");
+//                     scrollTo(0, 0);
+//                 }}
+//                 className="bg-green-50 text--gray-600 px-12 py-3 rounded-[6px] mt-10"
+//             >
+//                 more
+//             </button>
+//         </div>
+//     );
+// };
+
+// export default RelatedDoctors;
+
+
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
-import { assets } from "../assets/assets";
 
 const RelatedDoctors = ({ speciality, docId }) => {
     const { doctors, currencySymbol } = useContext(AppContext);
     const navigate = useNavigate();
 
     const [relDoc, setRelDoc] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (doctors.length > 0 && speciality) {
@@ -17,192 +111,83 @@ const RelatedDoctors = ({ speciality, docId }) => {
             );
             setRelDoc(doctorsData);
         }
-        setLoading(false);
     }, [doctors, speciality, docId]);
 
-    if (loading) {
-        return (
-            <div className="flex flex-col items-center gap-4 my-10 text-gray-900 md:mx-10">
-                <div className="animate-pulse">
-                    <div className="h-8 bg-gray-200 rounded w-48 mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded w-64 mb-8"></div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="bg-gray-200 rounded-xl h-80"></div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    if (relDoc.length === 0) {
-        return (
-            <div className="flex flex-col items-center gap-4 my-10 text-gray-900 md:mx-10">
-                <div className="text-center py-8">
-                    <div className="text-gray-400 mb-4">
-                        <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Related Doctors</h3>
-                    <p className="text-gray-600 mb-4">
-                        No other doctors found in the same speciality.
-                    </p>
-                    <button
-                        onClick={() => {
-                            navigate("/doctors");
-                            scrollTo(0, 0);
-                        }}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                        Browse All Doctors
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="flex flex-col items-center gap-6 my-16 text-gray-900 md:mx-10">
-            {/* Header Section */}
-            <div className="text-center max-w-2xl">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                    Related {speciality} Doctors
-                </h2>
-                <p className="text-gray-600 text-lg leading-relaxed">
-                    Discover other qualified {speciality.toLowerCase()} specialists who can help with your healthcare needs.
-                </p>
-            </div>
+        <div className="flex flex-col items-center gap-4 my-10 text-gray-900 px-4 sm:px-6 lg:px-10">
+            <h1 className="text-2xl sm:text-3xl font-medium text-center">
+                Related Doctors
+            </h1>
+            <p className="text-center text-sm max-w-md">
+                Simply browse through our extensive list of trusted doctors.
+            </p>
 
-            {/* Doctors Grid */}
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-8">
-                {relDoc.slice(0, 8).map((item, index) => (
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pt-5 gap-y-6">
+                {relDoc.slice(0, 5).map((item, index) => (
                     <div
                         onClick={() => {
                             navigate(`/appointment/${item._id}`);
                             scrollTo(0, 0);
                         }}
-                        className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden border border-gray-100 hover:border-blue-200"
+                        className="border border-green-200 rounded-xl overflow-hidden cursor-pointer hover:-translate-y-2 transition-transform duration-500"
                         key={index}
                     >
-                        {/* Doctor Image */}
-                        <div className="relative h-48 overflow-hidden">
-                            <img
-                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                src={item.image && item.image.trim() !== "" ? item.image : assets.doctor_icon}
-                                alt={item.name}
-                                onError={(e) => {
-                                    e.target.src = assets.doctor_icon;
-                                }}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                            
-                            {/* Availability Badge */}
-                            <div className="absolute top-4 right-4">
-                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                    item.available 
-                                        ? 'bg-green-100 text-green-800 border border-green-200' 
-                                        : 'bg-red-100 text-red-800 border border-red-200'
-                                }`}>
-                                    {item.available ? 'Available' : 'Unavailable'}
+                        <img
+                            className="bg-green-50 h-48 w-full object-cover object-top"
+                            src={item.image}
+                            alt={item.name}
+                            onError={(e) => {
+                                e.target.src = "/default-doctor.png"; // صورة افتراضية في حال الخطأ
+                            }}
+                        />
+                        <div className="p-4">
+                            <div
+                                className={`flex items-center gap-2 text-sm mb-2 ${
+                                    item.available
+                                        ? "text-green-500"
+                                        : "text-gray-500"
+                                }`}
+                            >
+                                <span
+                                    className={`w-2 h-2 rounded-full ${
+                                        item.available
+                                            ? "bg-green-500"
+                                            : "bg-gray-500"
+                                    }`}
+                                ></span>
+                                <span>
+                                    {item.available
+                                        ? "Available"
+                                        : "Not Available"}
                                 </span>
                             </div>
-
-                            {/* Experience Badge */}
-                            {item.experience && (
-                                <div className="absolute bottom-4 left-4">
-                                    <span className="px-2 py-1 bg-blue-600 text-white text-xs font-medium rounded-full">
-                                        {item.experience} Years
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Doctor Info */}
-                        <div className="p-6">
-                            <div className="flex items-start justify-between mb-3">
+                            <div className="flex justify-between items-start">
                                 <div>
-                                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                    <p className="text-gray-900 text-base font-semibold">
                                         {item.name}
-                                    </h3>
-                                    <p className="text-blue-600 font-medium text-sm">
-                                        {item.degree} - {item.speciality}
+                                    </p>
+                                    <p className="text-gray-600 text-sm">
+                                        {item.speciality}
                                     </p>
                                 </div>
-                                <div className="flex items-center">
-                                    <img
-                                        className="w-5 h-5"
-                                        src={assets.verified_icon}
-                                        alt="Verified"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* About Section */}
-                            {item.about && (
-                                <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
-                                    {item.about.length > 100 
-                                        ? `${item.about.substring(0, 100)}...` 
-                                        : item.about
-                                    }
+                                <p className="text-sm font-bold text-green-500 whitespace-nowrap">
+                                    {currencySymbol} {item.fees}
                                 </p>
-                            )}
-
-                            {/* Fee and Action */}
-                            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                                <div>
-                                    <p className="text-xs text-gray-500">Appointment Fee</p>
-                                    <p className="text-lg font-bold text-blue-600">
-                                        {currencySymbol} {item.fees}
-                                    </p>
-                                </div>
-                                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors group-hover:scale-105">
-                                    Book Now
-                                </button>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* View All Button */}
-            {relDoc.length > 8 && (
-                <div className="text-center mt-8">
-                    <button
-                        onClick={() => {
-                            navigate("/doctors");
-                            scrollTo(0, 0);
-                        }}
-                        className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                    >
-                        View All Doctors
-                    </button>
-                </div>
-            )}
-
-            {/* Speciality Filter */}
-            <div className="text-center mt-8">
-                <p className="text-gray-600 mb-4">Looking for a different speciality?</p>
-                <div className="flex flex-wrap justify-center gap-3">
-                    {['General physician', 'Gynecologist', 'Dermatologist', 'Pediatricians', 'Neurologist', 'Gastroenterologist'].map((spec) => (
-                        <button
-                            key={spec}
-                            onClick={() => {
-                                navigate(`/doctors/${spec}`);
-                                scrollTo(0, 0);
-                            }}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                                spec === speciality
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                            {spec}
-                        </button>
-                    ))}
-                </div>
-            </div>
+            <button
+                onClick={() => {
+                    navigate("/doctors");
+                    scrollTo(0, 0);
+                }}
+                className="bg-green-50 text-gray-700 hover:bg-green-100 px-8 py-2 rounded-md mt-8 text-sm sm:text-base transition-colors"
+            >
+                View More
+            </button>
         </div>
     );
 };

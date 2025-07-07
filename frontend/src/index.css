@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+*{
     font-family: Outfit;
 }
 
@@ -12,19 +12,12 @@
     @apply block;
 }
 
-/* Line clamp utility for text truncation */
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
 
-::-webkit-scrollbar {
+::-webkit-scrollbar{
     @apply hidden
 }
 
-@media (max-width:740px) {
+@media (max-width:740px){
     .active p {
         @apply text-white bg-primary
     }

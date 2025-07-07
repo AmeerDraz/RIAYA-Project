@@ -10,8 +10,6 @@ import Dashboard from "./pages/Admin/Dashboard";
 import AllApointments from "./pages/Admin/AllApointments";
 import AddDoctor from "./pages/Admin/AddDoctor";
 import DoctorsList from "./pages/Admin/DoctorsList";
-import EditDoctor from "./pages/Admin/EditDoctor";
-import ViewDoctor from "./pages/Admin/ViewDoctor";
 import { DoctorContext } from "./context/DoctorContext";
 import DoctorDashboard from "./pages/Doctor/DoctorDashboard";
 import DoctorAppointments from "./pages/Doctor/DoctorAppointments";
@@ -20,10 +18,6 @@ import DoctorProfile from "./pages/Doctor/DoctorProfile";
 const App = () => {
     const { aToken } = useContext(AdminContext);
     const { dToken } = useContext(DoctorContext);
-
-    console.log("App - aToken exists:", !!aToken);
-    console.log("App - dToken exists:", !!dToken);
-    console.log("App - Current URL:", window.location.pathname);
 
     return aToken || dToken ? (
         <div className="bg-[#F8F9FD]">
@@ -41,8 +35,6 @@ const App = () => {
                     />
                     <Route path="/add-doctor" element={<AddDoctor />} />
                     <Route path="/doctors-list" element={<DoctorsList />} />
-                    <Route path="/edit-doctor/:doctorId" element={<EditDoctor />} />
-                    <Route path="/view-doctor/:doctorId" element={<ViewDoctor />} />
                     {/* Doctor Routes */}
                     <Route
                         path="/doctor-dashboard"
