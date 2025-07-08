@@ -34,31 +34,40 @@ const doctorSchema = new mongoose.Schema(
         degree: { type: String, required: true },
         experience: { type: String, required: true },
         about: { type: String, required: true },
+        address: {
+            type: new mongoose.Schema(
+                {
+                    line1: { type: String, required: true },
+                    line2: { type: String },
+                },
+                { _id: false }
+            ),
+            required: true,
+        },
         available: { type: Boolean, required: true },
         fees: { type: Number, required: true },
-        address: { type: Object, required: true },
         date: { type: Number, required: true },
         slots_booked: { type: Object, default: {} },
-        workingHours: { 
-            type: Object, 
+        workingHours: {
+            type: Object,
             default: {},
-            // Ensure it's a proper object structure
             validate: {
-                validator: function(v) {
-                    return typeof v === 'object' && v !== null;
+                validator: function (v) {
+                    return typeof v === "object" && v !== null;
                 },
-                message: 'Working hours must be an object'
-            }
+                message: "Working hours must be an object",
+            },
         },
-        slotDuration: { 
-            type: Number, 
+        slotDuration: {
+            type: Number,
             default: 30,
             min: 15,
-            max: 120
+            max: 120,
         },
     },
     { minimize: false }
 );
+
 
 const doctorModel =
     mongoose.models.doctor || mongoose.model("doctor", doctorSchema);

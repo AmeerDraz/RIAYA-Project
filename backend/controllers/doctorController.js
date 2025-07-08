@@ -506,12 +506,32 @@ const getAvailableSlots = async (req, res) => {
 
         console.log('Generated slots:', slots.map((day, i) => `${i}: ${day.length} slots`));
 
+        // res.json({ 
+        //     success: true, 
+        //     slots,
+        //     workingHours,
+        //     slotDuration
+        // });
+        
         res.json({ 
-            success: true, 
-            slots,
-            workingHours,
-            slotDuration
-        });
+    success: true, 
+    slots,
+    workingHours,
+    slotDuration,
+    doctorInfo: {
+        name: doctor.name,
+        degree: doctor.degree,
+        speciality: doctor.speciality,
+        experience: doctor.experience,
+        fees: doctor.fees,
+        image: doctor.image,
+        available: doctor.available,
+        about: doctor.about,
+        address: doctor.address //  هذا السطر يرسل العنوان
+    }
+});
+
+        
     } catch (error) {
         console.error('Error in getAvailableSlots:', error);
         res.status(500).json({ success: false, message: "Server error" });

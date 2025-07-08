@@ -695,6 +695,7 @@ const Appointment = () => {
             if (data.success) {
                 setDocInfo(data.doctorInfo);
                 setAvailableSlots(data.slots);
+                console.log("Doctor Info:", data.doctorInfo);
             } else {
                 setError(data.message);
                 toast.error(data.message);
@@ -992,6 +993,26 @@ const Appointment = () => {
                                     </p>
                                 </div>
 
+                                {/*  Address section */}
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                        Address
+                                    </h3>
+                                    {docInfo.address &&
+                                    docInfo.address.line1 ? (
+                                        <p className="text-gray-600 leading-relaxed">
+                                            {docInfo.address.line1}
+                                            {docInfo.address.line2
+                                                ? `, ${docInfo.address.line2}`
+                                                : ""}
+                                        </p>
+                                    ) : (
+                                        <p className="text-gray-600 leading-relaxed">
+                                            Address not available.
+                                        </p>
+                                    )}
+                                </div>
+
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                     <div>
                                         <p className="text-sm text-gray-500">
@@ -1059,7 +1080,7 @@ const Appointment = () => {
                                     <h3 className="text-lg font-semibold text-gray-900 mb-4 ">
                                         Select Date
                                     </h3>
-                                    <div className="gap-3 grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-4 bg-red-500 sm:text-xs">
+                                    <div className="gap-3 grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-4 sm:text-xs">
                                         {availableSlots.map(
                                             (daySlots, index) => {
                                                 if (daySlots.length === 0)
@@ -1096,7 +1117,7 @@ const Appointment = () => {
                                                         }`}
                                                     >
                                                         <div className="text-center">
-                                                            <p className="text-sm font-medium text-gray-600">
+                                                            <p className="text-xs  font-medium text-gray-600">
                                                                 {getDayName(
                                                                     dateObj
                                                                 )}
