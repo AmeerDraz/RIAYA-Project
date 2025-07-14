@@ -36,10 +36,7 @@
 
 // userRouter.post("/testimonial/add", addTestimonial); // ✅
 
-
 // export default userRouter
-
-
 
 // import express from "express";
 // import {
@@ -90,8 +87,6 @@
 
 // export default userRouter;
 
-
-
 // import express from "express";
 // import {
 //     registerUser,
@@ -137,7 +132,6 @@
 // userRouter.post("/testimonial/add", authUser, addTestimonial);
 // userRouter.get("/testimonial/list", getTestimonials);
 // export default userRouter;
-
 
 // import express from "express";
 // import {
@@ -186,7 +180,6 @@
 
 // export default userRouter;
 
-
 import express from "express";
 import {
     registerUser,
@@ -200,6 +193,7 @@ import {
     verifyRazorpay,
     getDoctorAvailableSlots,
     testDoctors,
+    paymentStripe,
 } from "../controllers/userController.js";
 
 import {
@@ -228,6 +222,8 @@ userRouter.get("/appointments", authUser, listAppointment);
 userRouter.delete("/cancel-appointment", authUser, cancelAppointment);
 userRouter.post("/payment-razorpay", authUser, paymentRazorpay);
 userRouter.post("/verifyRazorpay", authUser, verifyRazorpay);
+userRouter.post("/payment-stripe", authUser, paymentStripe);
+
 userRouter.get("/test-doctors", testDoctors);
 
 // ⭐ التقييمات
