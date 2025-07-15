@@ -367,7 +367,7 @@ const ViewDoctor = () => {
                         degree: doctorData.degree || "",
                         about: doctorData.about || "",
                         fees: doctorData.fees || 0,
-                        available: doctorData.available || true,
+                        available: doctorData.available || false,
                         address: {
                             line1: doctorData.address?.line1 || "",
                             line2: doctorData.address?.line2 || "",
@@ -432,24 +432,52 @@ const ViewDoctor = () => {
         }
     }, [doctorId, getDoctorById, navigate]);
 
+    // const handleInputChange = (e) => {
+    //     const { name, value, type, checked } = e.target;
+    //     if (name.includes(".")) {
+    //         const [parent, child] = name.split(".");
+    //         setFormData((prev) => ({
+    //             ...prev,
+    //             [parent]: {
+    //                 ...prev[parent],
+    //                 [child]: type === "checkbox" ? checked : value,
+    //             },
+    //         }));
+    //     } else {
+    //         setFormData((prev) => ({
+    //             ...prev,
+    //             [name]: type === "checkbox" ? checked : value,
+    //         }));
+    //     }
+    // };
+
+
     const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        if (name.includes(".")) {
+        const { name, type, value, checked } = e.target;
+        if (type === "checkbox") {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: checked,
+            }));
+        } else if (name.includes(".")) {
+            // التعامل مع الحقول المتداخلة مثل address.line1
             const [parent, child] = name.split(".");
             setFormData((prev) => ({
                 ...prev,
                 [parent]: {
                     ...prev[parent],
-                    [child]: type === "checkbox" ? checked : value,
+                    [child]: value,
                 },
             }));
         } else {
             setFormData((prev) => ({
                 ...prev,
-                [name]: type === "checkbox" ? checked : value,
+                [name]: value,
             }));
         }
     };
+    
+
 
     const updateProfile = async () => {
         try {

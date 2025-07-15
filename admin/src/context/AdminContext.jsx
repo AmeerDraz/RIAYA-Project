@@ -45,9 +45,18 @@ const AdminContextProvider = (props) => {
                 { docId },
                 { headers: { aToken } }
             );
+
             if (data.success) {
                 toast.success(data.message);
-                getAllDoctors();
+
+                // ✅ عدّل حالة الطبيب مباشرة في الستيت بدون إعادة الجلب
+                setDoctors((prevDoctors) =>
+                    prevDoctors.map((doc) =>
+                        doc._id === docId
+                            ? { ...doc, available: !doc.available }
+                            : doc
+                    )
+                );
             } else {
                 toast.error(data.message);
             }
@@ -55,6 +64,7 @@ const AdminContextProvider = (props) => {
             toast.error(error.message);
         }
     };
+    
 
     const getAllAppointments = async () => {
         setLoadingAppointments(true);

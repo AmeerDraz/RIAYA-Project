@@ -713,6 +713,73 @@ const Appointment = () => {
     };
 
     // Book appointment
+    // const bookAppointment = async () => {
+    //     if (!token) {
+    //         toast.warn("Please login to book an appointment.");
+    //         return navigate("/login");
+    //     }
+
+    //     if (selectedDay === null) {
+    //         toast.error("Please select a day for the appointment.");
+    //         return;
+    //     }
+
+    //     if (!selectedTime) {
+    //         toast.error("Please select a time for the appointment.");
+    //         return;
+    //     }
+
+    //     setLoading(true);
+
+    //     try {
+    //         const selectedSlot = availableSlots[selectedDay].find(
+    //             (slot) => slot.time === selectedTime
+    //         );
+    //         if (!selectedSlot) {
+    //             toast.error("Selected slot is no longer available.");
+    //             return;
+    //         }
+
+    //         const date = selectedSlot.date;
+
+    //         // Ensure date is a Date object
+    //         const dateObj = date instanceof Date ? date : new Date(date);
+
+    //         // Check if date is valid
+    //         if (isNaN(dateObj.getTime())) {
+    //             toast.error("Invalid date selected.");
+    //             return;
+    //         }
+
+    //         let day = dateObj.getDate();
+    //         let month = dateObj.getMonth() + 1;
+    //         let year = dateObj.getFullYear();
+    //         const slotDate = `${day}_${month}_${year}`;
+
+    //         const { data } = await axios.post(
+    //             `${backendUrl}/api/user/book-Appointment`,
+    //             { docId, slotDate, slotTime: selectedTime },
+    //             { headers: { token } }
+    //         );
+
+    //         if (data.success) {
+    //             toast.success(data.message);
+    //             await getDoctorsData(); // Refresh doctors data
+    //             navigate("/my-appointments");
+    //         } else {
+    //             toast.error(data.message);
+    //         }
+    //     } catch (error) {
+    //         console.error("Error booking appointment:", error);
+    //         toast.error(
+    //             error.response?.data?.message || "Failed to book appointment."
+    //         );
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+
     const bookAppointment = async () => {
         if (!token) {
             toast.warn("Please login to book an appointment.");
@@ -741,11 +808,8 @@ const Appointment = () => {
             }
 
             const date = selectedSlot.date;
-
-            // Ensure date is a Date object
             const dateObj = date instanceof Date ? date : new Date(date);
 
-            // Check if date is valid
             if (isNaN(dateObj.getTime())) {
                 toast.error("Invalid date selected.");
                 return;
@@ -756,15 +820,17 @@ const Appointment = () => {
             let year = dateObj.getFullYear();
             const slotDate = `${day}_${month}_${year}`;
 
+      
             const { data } = await axios.post(
-                `${backendUrl}/api/user/book-Appointment`,
-                { docId, slotDate, slotTime: selectedTime },
-                { headers: { token } }
-            );
+                            `${backendUrl}/api/user/book-Appointment`,
+                            { docId, slotDate, slotTime: selectedTime },
+                            { headers: { token } }
+                        );
+            
 
             if (data.success) {
                 toast.success(data.message);
-                await getDoctorsData(); // Refresh doctors data
+                await getDoctorsData();
                 navigate("/my-appointments");
             } else {
                 toast.error(data.message);
@@ -778,6 +844,9 @@ const Appointment = () => {
             setLoading(false);
         }
     };
+    
+
+
 
     // Get day name from date
     const getDayName = (date) => {

@@ -1331,7 +1331,7 @@ const DoctorProfile = () => {
                 degree: profileData.degree || "",
                 about: profileData.about || "",
                 fees: profileData.fees || 0,
-                available: profileData.available || true,
+                available: profileData.available || false,
                 address: {
                     line1: profileData.address?.line1 || "",
                     line2: profileData.address?.line2 || "",
@@ -1340,24 +1340,52 @@ const DoctorProfile = () => {
         }
     }, [profileData]);
 
+    // const handleInputChange = (e) => {
+    //     const { name, value, type, checked } = e.target;
+    //     if (name.includes(".")) {
+    //         const [parent, child] = name.split(".");
+    //         setFormData((prev) => ({
+    //             ...prev,
+    //             [parent]: {
+    //                 ...prev[parent],
+    //                 [child]: type === "checkbox" ? checked : value,
+    //             },
+    //         }));
+    //     } else {
+    //         setFormData((prev) => ({
+    //             ...prev,
+    //             [name]: type === "checkbox" ? checked : value,
+    //         }));
+    //     }
+    // };
+
+
     const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        if (name.includes(".")) {
+        const { name, type, value, checked } = e.target;
+        if (type === "checkbox") {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: checked,
+            }));
+        } else if (name.includes(".")) {
+            // التعامل مع الحقول المتداخلة مثل address.line1
             const [parent, child] = name.split(".");
             setFormData((prev) => ({
                 ...prev,
                 [parent]: {
                     ...prev[parent],
-                    [child]: type === "checkbox" ? checked : value,
+                    [child]: value,
                 },
             }));
         } else {
             setFormData((prev) => ({
                 ...prev,
-                [name]: type === "checkbox" ? checked : value,
+                [name]: value,
             }));
         }
     };
+    
+
 
     useEffect(() => {
         const fetchData = async () => {

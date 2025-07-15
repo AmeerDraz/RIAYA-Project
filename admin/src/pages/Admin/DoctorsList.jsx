@@ -280,7 +280,6 @@
 
 // export default DoctorsList;
 
-
 // import React, { useContext, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { AdminContext } from "../../context/AdminContext";
@@ -303,9 +302,9 @@
 //             console.warn("لا يوجد aToken في localStorage");
 //         }
 //     }, [aToken]);
-    
+
 //     console.log("Current doctors state: ", doctors); // ✅ لمعرفة حالة الستيت داخل الكومبوننت
-    
+
 //     if (loadingDoctors) {
 //         return (
 //             <div className="m-5 flex justify-center items-center h-[70vh]">
@@ -313,7 +312,7 @@
 //             </div>
 //         );
 //     }
-    
+
 //     if (!doctors || doctors.length === 0) {
 //         return (
 //             <div className="m-5">
@@ -322,7 +321,7 @@
 //             </div>
 //         );
 //     }
-    
+
 //     return (
 //         <div className="m-5 max-h-[90vh] overflow-y-scroll">
 //             <h1 className="text-lg font-medium">All Doctors</h1>
@@ -354,7 +353,7 @@
 //                                 />
 //                                 <p>Available</p>
 //                             </div>
-                            
+
 //                             {/* زر الانتقال إلى ViewDoctor */}
 //                             <button
 //                                 onClick={() => navigate(`/view-doctor/${item._id}`)}
@@ -372,7 +371,6 @@
 
 // export default DoctorsList;
 
-
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AdminContext } from "../../context/AdminContext";
@@ -384,7 +382,6 @@ const DoctorsList = () => {
         doctors,
         aToken,
         getAllDoctors,
-        changeAvailapility,
         loadingDoctors,
     } = useContext(AdminContext);
 
@@ -439,9 +436,6 @@ const DoctorsList = () => {
                             </p>
                             <div className="mt-2 flex items-center gap-1 text-sm">
                                 <input
-                                    onChange={() =>
-                                        changeAvailapility(item._id)
-                                    }
                                     type="checkbox"
                                     checked={item.available}
                                 />

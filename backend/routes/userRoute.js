@@ -21,7 +21,7 @@
 // userRouter.post('/login', loginUser)
 
 // // Public endpoint to get available slots for a doctor
-// userRouter.get('/doctor/:doctorId/available-slots', getDoctorAvailableSlots)
+// userRouter.get('/doctor/:docId/available-slots', getDoctorAvailableSlots)
 
 // userRouter.get('/get-profile',authUser,getProfile)
 // userRouter.post('/update-profile',upload.single('image'),authUser,updateProfile)
@@ -64,7 +64,7 @@
 // userRouter.post("/login", loginUser);
 
 // // ✅ Public endpoint to get available slots for a doctor
-// userRouter.get("/doctor/:doctorId/available-slots", getAvailableSlots);
+// userRouter.get("/doctor/:docId/available-slots", getAvailableSlots);
 
 // userRouter.get("/get-profile", authUser, getProfile);
 // userRouter.post(
@@ -114,7 +114,7 @@
 
 // userRouter.post("/register", registerUser);
 // userRouter.post("/login", loginUser);
-// userRouter.get("/doctor/:doctorId/available-slots", getDoctorAvailableSlots);
+// userRouter.get("/doctor/:docId/available-slots", getDoctorAvailableSlots);
 // userRouter.get("/get-profile", authUser, getProfile);
 // userRouter.post(
 //     "/update-profile",
@@ -160,7 +160,7 @@
 
 // userRouter.post("/register", registerUser);
 // userRouter.post("/login", loginUser);
-// userRouter.get("/doctor/:doctorId/available-slots", getDoctorAvailableSlots);
+// userRouter.get("/doctor/:docId/available-slots", getDoctorAvailableSlots);
 // userRouter.get("/get-profile", authUser, getProfile);
 // userRouter.post(
 //     "/update-profile",
@@ -194,6 +194,7 @@ import {
     getDoctorAvailableSlots,
     testDoctors,
     paymentStripe,
+    stripeWebhook,
 } from "../controllers/userController.js";
 
 import {
@@ -209,7 +210,7 @@ const userRouter = express.Router();
 
 userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
-userRouter.get("/doctor/:doctorId/available-slots", getDoctorAvailableSlots);
+userRouter.get("/doctor/:docId/available-slots", getDoctorAvailableSlots);
 userRouter.get("/get-profile", authUser, getProfile);
 userRouter.post(
     "/update-profile",
@@ -223,6 +224,11 @@ userRouter.delete("/cancel-appointment", authUser, cancelAppointment);
 userRouter.post("/payment-razorpay", authUser, paymentRazorpay);
 userRouter.post("/verifyRazorpay", authUser, verifyRazorpay);
 userRouter.post("/payment-stripe", authUser, paymentStripe);
+userRouter.post(
+    "/stripe-webhook",
+    express.raw({ type: "application/json" }),
+    stripeWebhook
+);
 
 userRouter.get("/test-doctors", testDoctors);
 

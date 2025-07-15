@@ -773,4 +773,5 @@ export {
     getDoctorAvailableSlots,
     testDoctors,
     paymentStripe,
+    stripeWebhook,
 };
