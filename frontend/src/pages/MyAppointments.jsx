@@ -748,15 +748,37 @@ const MyAppointments = () => {
         if (appointment.cancelled) return "red";
         if (appointment.isCompleted) return "green";
         if (appointment.payment) return "green";
+        // if (appointment.payment === "Online") return "green";
+
         return "yellow";
     };
+
+    // const getStatusColor = (appointment) => {
+    //     if (appointment.cancelled) return "red";
+    //     if (appointment.isCompleted) return "green";
+    //     if (appointment.payment === "Online" || appointment.payment === "Cash")
+    //         return "green";
+    //     return "yellow"; // Pending
+    // };
+
 
     const getStatusText = (appointment) => {
         if (appointment.cancelled) return "Cancelled";
         if (appointment.isCompleted) return "Completed";
         if (appointment.payment) return "Confirmed";
+        // if (appointment.payment === "Online") return "Confirmed";
         return "Pending Payment";
     };
+
+    // const getStatusText = (appointment) => {
+    //     if (appointment.cancelled) return "Cancelled";
+    //     if (appointment.isCompleted) return "Completed";
+    //     if (appointment.payment === "Online" || appointment.payment === "Cash")
+    //         return "Confirmed";
+    //     return "Pending Payment";
+    // };
+
+
 
     const getStatusIcon = (appointment) => {
         if (appointment.cancelled) {
@@ -879,59 +901,6 @@ const MyAppointments = () => {
             toast.error(error.message);
         }
     };
-
-    // const initPay = (order) => {
-    //     const options = {
-    //         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-    //         amount: order.amount,
-    //         currency: order.currency,
-    //         name: "Appointment Payment",
-    //         description: "Appointment Payment",
-    //         order_id: order.id,
-    //         receipt: order.receipt,
-    //         handler: async (response) => {
-    //             console.log(response);
-
-    //             try {
-    //                 const { data } = await axios.post(
-    //                     backendUrl + "/api/user/verifyRazorpay",
-    //                     response,
-    //                     { headers: { token } }
-    //                 );
-    //                 if (data.success) {
-    //                     getUserAppointments();
-    //                     navigate("/my-appointments");
-    //                 }
-    //             } catch (error) {
-    //                 console.log(error);
-    //                 toast.error(error.message);
-    //             }
-    //         },
-    //     };
-
-    //     const rzp = new window.Razorpay(options);
-    //     rzp.open();
-    // };
-
-    // const appointmentRazorpay = async (appointmentId) => {
-    //     try {
-    //         const { data } = await axios.post(
-    //             backendUrl + "/api/user/payment-razorpay",
-    //             { appointmentId },
-    //             { headers: { token } }
-    //         );
-
-    //         if (data.success) {
-    //             initPay(data.order);
-    //         } else {
-    //             console.log(data);
-    //             toast.error(data.message);
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //         toast.error(error.message);
-    //     }
-    // };
 
     const paymentStripe = async (appointmentId) => {
         try {
@@ -1389,30 +1358,6 @@ const MyAppointments = () => {
                                                             !appointment.isCompleted && (
                                                                 <>
                                                                     {appointment.payment ? (
-                                                                        <div className="px-4 py-2 bg-green-50 border border-green-200 rounded-lg">
-                                                                            <div className="flex items-center gap-2 text-green-700">
-                                                                                <svg
-                                                                                    className="w-4 h-4"
-                                                                                    fill="none"
-                                                                                    stroke="currentColor"
-                                                                                    viewBox="0 0 24 24"
-                                                                                >
-                                                                                    <path
-                                                                                        strokeLinecap="round"
-                                                                                        strokeLinejoin="round"
-                                                                                        strokeWidth={
-                                                                                            2
-                                                                                        }
-                                                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                                                    />
-                                                                                </svg>
-                                                                                <span className="text-sm font-medium">
-                                                                                    Payment
-                                                                                    Confirmed
-                                                                                </span>
-                                                                            </div>
-                                                                        </div>
-                                                                    ) : (
                                                                         <button
                                                                             onClick={() =>
                                                                                 paymentStripe(
@@ -1440,6 +1385,30 @@ const MyAppointments = () => {
                                                                             Pay
                                                                             Online
                                                                         </button>
+                                                                    ) : (
+                                                                        <div className="px-4 py-2 bg-green-50 border border-green-200 rounded-lg">
+                                                                            <div className="flex items-center gap-2 text-green-700">
+                                                                                <svg
+                                                                                    className="w-4 h-4"
+                                                                                    fill="none"
+                                                                                    stroke="currentColor"
+                                                                                    viewBox="0 0 24 24"
+                                                                                >
+                                                                                    <path
+                                                                                        strokeLinecap="round"
+                                                                                        strokeLinejoin="round"
+                                                                                        strokeWidth={
+                                                                                            2
+                                                                                        }
+                                                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                                                    />
+                                                                                </svg>
+                                                                                <span className="text-sm font-medium">
+                                                                                    Payment
+                                                                                    Confirmed
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
                                                                     )}
 
                                                                     <button

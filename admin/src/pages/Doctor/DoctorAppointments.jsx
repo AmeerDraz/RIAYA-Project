@@ -469,7 +469,16 @@ const DoctorAppointments = () => {
                             {/* Payment */}
                             <div>
                                 <p className="text-xs inline border border-primary px-2 rounded-[6px]">
-                                    {item.payment ? "Online" : "CASH"}
+                                    {/* {item.payment ? "Online" : "CASH"} */}
+                                    {item.paymentMethod === "Online"
+                                        ? "Online"
+                                        : "Cash"}
+                                    {/* {item.payment &&
+                                    item.payment.toLowerCase() === "online"
+                                        ? "Online"
+                                        : "Cash"} */}
+                                        {/* {(item.payment || "").toLowerCase() === "online" ? "Online" : "Cash"} */}
+
                                 </p>
                             </div>
 

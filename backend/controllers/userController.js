@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
-import razorpay from "razorpay";
 import Stripe from "stripe";
 
 // تسجيل المستخدم
@@ -188,6 +187,7 @@ const bookAppointment = async (req, res) => {
             slotTime,
             slotDate,
             date: Date.now(),
+            payment: "Pending", // ← هام جداً
         };
 
         const newAppointment = new appointmentModel(appointmentData);
@@ -213,6 +213,57 @@ const listAppointment = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 };
+
+// const listAppointment = async (req, res) => {
+//     try {
+//         const userId = req.userId;
+//         const appointments = await appointmentModel
+//             .find({ userId })
+//             .populate("docId", "name fees");
+
+//         const appointmentsWithPayment = appointments.map((app) => ({
+//             ...app.toObject(),
+//             payment: app.payment || "Cash", // قيمة افتراضية لو مش مدفوعة أونلاين
+//         }));
+
+//         res.json({ success: true, appointments: appointmentsWithPayment });
+//     } catch (error) {
+//         console.error(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
+
+// const listAppointment = async (req, res) => {
+//     try {
+//         const userId = req.userId;
+//         const appointments = await appointmentModel
+//             .find({ userId })
+//             .populate("docId", "name fees");
+
+//         const appointmentsWithPayment = appointments.map((app) => {
+//             let paymentStatus = "Cash"; // القيمة الافتراضية
+
+//             if (app.payment && typeof app.payment === "string") {
+//                 // إذا كانت قيمة الدفع موجودة ونصية
+//                 paymentStatus =
+//                     app.payment.toLowerCase() === "online"
+//                         ? "Online"
+//                         : app.payment;
+//             }
+//             // لو payment قيمة أخرى أو غير موجودة، تبقى "Cash"
+
+//             return {
+//                 ...app.toObject(),
+//                 payment: paymentStatus,
+//             };
+//         });
+
+//         res.json({ success: true, appointments: appointmentsWithPayment });
+//     } catch (error) {
+//         console.error(error);
+//         res.json({ success: false, message: error.message });
+//     }
+// };
 
 // إلغاء موعد
 const cancelAppointment = async (req, res) => {
@@ -245,61 +296,6 @@ const cancelAppointment = async (req, res) => {
         await doctorModel.findByIdAndUpdate(docId, { slots_booked });
 
         res.json({ success: true, message: "Appointment cancelled" });
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: error.message });
-    }
-};
-
-// إعداد Razorpay
-const razorpayInstance = new razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-
-// تهيئة الدفع عبر Razorpay
-const paymentRazorpay = async (req, res) => {
-    try {
-        const { appointmentId } = req.body;
-        const appointmentData = await appointmentModel.findById(appointmentId);
-
-        if (!appointmentData || appointmentData.cancelled) {
-            return res.json({
-                success: false,
-                message: "Appointment cancelled or not found",
-            });
-        }
-
-        const options = {
-            amount: appointmentData.amount * 100,
-            currency: process.env.CURRENCY || "USD",
-            receipt: appointmentId,
-        };
-
-        const order = await razorpayInstance.orders.create(options);
-        res.json({ success: true, order });
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: error.message });
-    }
-};
-
-// التحقق من الدفع Razorpay
-const verifyRazorpay = async (req, res) => {
-    try {
-        const { razorpay_order_id } = req.body;
-        const orderInfo = await razorpayInstance.orders.fetch(
-            razorpay_order_id
-        );
-
-        if (orderInfo.status === "paid") {
-            await appointmentModel.findByIdAndUpdate(orderInfo.receipt, {
-                payment: true,
-            });
-            res.json({ success: true, message: "Payment successful" });
-        } else {
-            res.json({ success: false, message: "Payment not successful" });
-        }
     } catch (error) {
         console.error(error);
         res.json({ success: false, message: error.message });
@@ -340,7 +336,13 @@ const paymentStripe = async (req, res) => {
                 .json({ success: false, message: "Appointment not found" });
         }
 
-        if (appointment.payment) {
+        // if (appointment.payment) {
+        //     return res
+        //         .status(400)
+        //         .json({ success: false, message: "Already paid" });
+        // }
+
+        if (appointment.payment === "Online") {
             return res
                 .status(400)
                 .json({ success: false, message: "Already paid" });
@@ -349,6 +351,7 @@ const paymentStripe = async (req, res) => {
         console.log("Creating Stripe session...");
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
+            customer_email: appointment.userData.email,
             line_items: [
                 {
                     price_data: {
@@ -362,8 +365,8 @@ const paymentStripe = async (req, res) => {
                 },
             ],
             mode: "payment",
-            success_url: `https://www.google.com/`, //اعمل واجهة نجاح عملية الدفع و اربطها هون لحتى يحول المستخدم عليها عند نجاح الدفع  ويلي تحتها واجهة فشل الدفع -- يعني ممكن  تعملها لوجيك
-            cancel_url: `https://www.google.com/`,
+            success_url: `http://localhost:5173/payment-success?appointmen tId=${appointment._id}`, //اعمل واجهة نجاح عملية الدفع و اربطها هون لحتى يحول المستخدم عليها عند نجاح الدفع  ويلي تحتها واجهة فشل الدفع -- يعني ممكن  تعملها لوجيك
+            cancel_url: `http://localhost:5173/payment-failed`,
             metadata: {
                 appointmentId: appointment._id.toString(),
                 userId: req.userId?.toString(), // استخدام req.user._id كما في middleware المعدل
@@ -380,7 +383,7 @@ const paymentStripe = async (req, res) => {
 
 const stripeWebhook = async (req, res) => {
     const sig = req.headers["stripe-signature"];
-
+    console.log("start stripeeeeeeeeeeeeeeeee");
     try {
         const event = stripe.webhooks.constructEvent(
             req.body,
@@ -393,8 +396,12 @@ const stripeWebhook = async (req, res) => {
             const appointmentId =
                 session.success_url.split("appointmentId=")[1];
 
+            // await appointmentModel.findByIdAndUpdate(appointmentId, {
+            //     payment: true,
+            // });
+
             await appointmentModel.findByIdAndUpdate(appointmentId, {
-                payment: true,
+                payment: "Online",
             });
 
             console.log(
@@ -410,160 +417,36 @@ const stripeWebhook = async (req, res) => {
     }
 };
 
-// Get available slots for a specific doctor (public endpoint)
-// const getDoctorAvailableSlots = async (req, res) => {
+// const stripeWebhook = async (req, res) => {
+//     const sig = req.headers["stripe-signature"];
+// console.log("start webhook");
+
 //     try {
-//         const { doctorId } = req.params;
+//         const event = stripe.webhooks.constructEvent(
+//             req.body,
+//             sig,
+//             process.env.STRIPE_WEBHOOK_SECRET
+//         );
+// console.log(event.type);
+//         if (event.type === "checkout.session.completed") {
+//             const session = event.data.object;
+//             const appointmentId = session.metadata.appointmentId;
 
-//         const doctor = await doctorModel.findById(doctorId);
-
-//         if (!doctor) {
-//             return res
-//                 .status(404)
-//                 .json({ success: false, message: "Doctor not found" });
-//         }
-
-//         const { workingHours, slotDuration } = doctor;
-
-//         console.log('=== Get Doctor Available Slots Debug ===');
-//         console.log('Doctor ID:', doctorId);
-//         console.log('Doctor found:', !!doctor);
-//         console.log('Working Hours:', workingHours);
-//         console.log('Slot Duration:', slotDuration);
-//         console.log('Doctor data:', {
-//             name: doctor.name,
-//             speciality: doctor.speciality,
-//             image: doctor.image,
-//             about: doctor.about,
-//             available: doctor.available
-//         });
-
-//         // If no working hours set, return basic info with empty slots
-//         if (!workingHours || Object.keys(workingHours).length === 0) {
-//             console.log('No working hours set for doctor');
-//             return res.json({
-//                 success: true,
-//                 slots: Array(7).fill([]),
-//                 workingHours: {},
-//                 slotDuration: 30,
-//                 doctorInfo: {
-//                     _id: doctor._id,
-//                     name: doctor.name,
-//                     speciality: doctor.speciality,
-//                     degree: doctor.degree,
-//                     experience: doctor.experience,
-//                     fees: doctor.fees,
-//                     available: doctor.available,
-//                     image: doctor.image,
-//                     about: doctor.about
-//                 }
+//             console.log(" Payment  appointmentId :", appointmentId);
+//             await appointmentModel.findByIdAndUpdate(appointmentId, {
+//                 payment: "Online",
 //             });
+
+//             console.log(
+//                 "✅ Payment successful for appointment:",
+//                 appointmentId
+//             );
 //         }
 
-//         if (!slotDuration) {
-//             return res
-//                 .status(400)
-//                 .json({
-//                     success: false,
-//                     message: "Slot duration not set",
-//                 });
-//         }
-
-//         // Convert time string to minutes
-//         const toMinutes = (timeStr) => {
-//             const [hours, minutes] = timeStr.split(":").map(Number);
-//             return hours * 60 + minutes;
-//         };
-
-//         // Convert minutes to time string
-//         const toTimeString = (minutes) => {
-//             const hours = Math.floor(minutes / 60);
-//             const mins = minutes % 60;
-//             return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-//         };
-
-//         // Get current date and generate slots for next 7 days
-//         const today = new Date();
-//         const slots = [];
-
-//         for (let i = 0; i < 7; i++) {
-//             const currentDate = new Date(today);
-//             currentDate.setDate(today.getDate() + i);
-
-//             const dayOfWeek = currentDate.getDay();
-//             const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-//             const dayKey = dayNames[dayOfWeek];
-
-//             const daySchedule = workingHours[dayKey];
-
-//             if (!daySchedule || (daySchedule.enabled !== undefined && !daySchedule.enabled)) {
-//                 slots.push([]);
-//                 continue;
-//             }
-
-//             const startMinutes = toMinutes(daySchedule.from);
-//             const endMinutes = toMinutes(daySchedule.to);
-
-//             let daySlots = [];
-
-//             // Generate slots for this day
-//             for (let time = startMinutes; time + slotDuration <= endMinutes; time += slotDuration) {
-//                 const slotTime = toTimeString(time);
-
-//                 // Check if this slot is booked
-//                 const day = currentDate.getDate();
-//                 const month = currentDate.getMonth() + 1;
-//                 const year = currentDate.getFullYear();
-//                 const slotDate = `${day}_${month}_${year}`;
-
-//                 const isSlotBooked = doctor.slots_booked &&
-//                     doctor.slots_booked[slotDate] &&
-//                     doctor.slots_booked[slotDate].includes(slotTime);
-
-//                 if (!isSlotBooked) {
-//                     daySlots.push({
-//                         time: slotTime,
-//                         date: new Date(currentDate),
-//                         dayName: dayKey
-//                     });
-//                 }
-//             }
-
-//             // For today, filter out past slots
-//             if (i === 0) {
-//                 const now = new Date();
-//                 const currentTime = now.getHours() * 60 + now.getMinutes();
-//                 daySlots = daySlots.filter(slot => {
-//                     const slotMinutes = toMinutes(slot.time);
-//                     return slotMinutes > currentTime + 30; // 30 minutes buffer
-//                 });
-//             }
-
-//             slots.push(daySlots);
-//         }
-
-//         console.log('Generated slots:', slots.map((day, i) => `${i}: ${day.length} slots`));
-
-//         res.json({
-//             success: true,
-//             slots,
-//             workingHours,
-//             slotDuration,
-//             doctorInfo: {
-//                 _id: doctor._id,
-//                 name: doctor.name,
-//                 speciality: doctor.speciality,
-//                 degree: doctor.degree,
-//                 experience: doctor.experience,
-//                 fees: doctor.fees,
-//                 available: doctor.available,
-//                 image: doctor.image,
-//                 about: doctor.about
-//             }
-//         });
-//     } catch (error) {
-//         console.error('Error in getDoctorAvailableSlots:', error);
-//         res.status(500).json({ success: false, message: "Server error" });
+//         res.json({ received: true });
+//     } catch (err) {
+//         console.error("❌ Stripe Webhook Error:", err.message);
+//         res.status(400).send(`Webhook Error: ${err.message}`);
 //     }
 // };
 
@@ -768,8 +651,6 @@ export {
     bookAppointment,
     listAppointment,
     cancelAppointment,
-    paymentRazorpay,
-    verifyRazorpay,
     getDoctorAvailableSlots,
     testDoctors,
     paymentStripe,

@@ -7,8 +7,6 @@
 //     bookAppointment,
 //     listAppointment,
 //     cancelAppointment,
-//     paymentRazorpay,
-//     verifyRazorpay,
 //     getDoctorAvailableSlots,
 //     testDoctors,
 //     addTestimonial,
@@ -28,8 +26,6 @@
 // userRouter.post('/book-Appointment',authUser,bookAppointment)
 // userRouter.get('/appointments',authUser,listAppointment)
 // userRouter.delete('/cancel-appointment',authUser,cancelAppointment)
-// userRouter.post('/payment-razorpay',authUser,paymentRazorpay)
-// userRouter.post('/verifyRazorpay',authUser,verifyRazorpay)
 
 // // Test endpoint
 // userRouter.get('/test-doctors', testDoctors)
@@ -47,8 +43,6 @@
 //     bookAppointment,
 //     listAppointment,
 //     cancelAppointment,
-//     paymentRazorpay,
-//     verifyRazorpay,
 //     testDoctors,
 //     addTestimonial,
 // } from "../controllers/userController.js";
@@ -76,8 +70,6 @@
 // userRouter.post("/book-Appointment", authUser, bookAppointment);
 // userRouter.get("/appointments", authUser, listAppointment);
 // userRouter.delete("/cancel-appointment", authUser, cancelAppointment);
-// userRouter.post("/payment-razorpay", authUser, paymentRazorpay);
-// userRouter.post("/verifyRazorpay", authUser, verifyRazorpay);
 
 // // Test endpoint
 // userRouter.get("/test-doctors", testDoctors);
@@ -96,8 +88,7 @@
 //     bookAppointment,
 //     listAppointment,
 //     cancelAppointment,
-//     paymentRazorpay,
-//     verifyRazorpay,
+
 //     getDoctorAvailableSlots,
 //     testDoctors,
 // } from "../controllers/"";
@@ -125,8 +116,6 @@
 // userRouter.post("/book-Appointment", authUser, bookAppointment);
 // userRouter.get("/appointments", authUser, listAppointment);
 // userRouter.delete("/cancel-appointment", authUser, cancelAppointment);
-// userRouter.post("/payment-razorpay", authUser, paymentRazorpay);
-// userRouter.post("/verifyRazorpay", authUser, verifyRazorpay);
 // userRouter.get("/test-doctors", testDoctors);
 
 // userRouter.post("/testimonial/add", authUser, addTestimonial);
@@ -142,8 +131,6 @@
 //     bookAppointment,
 //     listAppointment,
 //     cancelAppointment,
-//     paymentRazorpay,
-//     verifyRazorpay,
 //     getDoctorAvailableSlots,
 //     testDoctors,
 // } from "../controllers/userController.js";
@@ -171,8 +158,6 @@
 // userRouter.post("/book-Appointment", authUser, bookAppointment);
 // userRouter.get("/appointments", authUser, listAppointment);
 // userRouter.delete("/cancel-appointment", authUser, cancelAppointment);
-// userRouter.post("/payment-razorpay", authUser, paymentRazorpay);
-// userRouter.post("/verifyRazorpay", authUser, verifyRazorpay);
 // userRouter.get("/test-doctors", testDoctors);
 
 // userRouter.post("/testimonial/add", authUser, addTestimonial);
@@ -189,8 +174,6 @@ import {
     bookAppointment,
     listAppointment,
     cancelAppointment,
-    paymentRazorpay,
-    verifyRazorpay,
     getDoctorAvailableSlots,
     testDoctors,
     paymentStripe,
@@ -221,8 +204,6 @@ userRouter.post(
 userRouter.post("/book-Appointment", authUser, bookAppointment);
 userRouter.get("/appointments", authUser, listAppointment);
 userRouter.delete("/cancel-appointment", authUser, cancelAppointment);
-userRouter.post("/payment-razorpay", authUser, paymentRazorpay);
-userRouter.post("/verifyRazorpay", authUser, verifyRazorpay);
 userRouter.post("/payment-stripe", authUser, paymentStripe);
 userRouter.post(
     "/stripe-webhook",

@@ -14,6 +14,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ForgetPassword from "./pages/ForgetPassword";
 import { ToastContainer } from "react-toastify";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFaild from "./pages/PaymentFaild";
 
 const App = () => {
     return (
@@ -42,6 +44,11 @@ const App = () => {
                         path="/appointment/:docId"
                         element={<Appointment />}
                     />
+                    <Route
+                        path="/payment-success"
+                        element={<PaymentSuccess />}
+                    />
+                    <Route path="/payment-failed" element={<PaymentFaild />} />
                 </Routes>
 
                 <Footer />
