@@ -744,41 +744,37 @@ const MyAppointments = () => {
         }`;
     };
 
-    const getStatusColor = (appointment) => {
-        if (appointment.cancelled) return "red";
-        if (appointment.isCompleted) return "green";
-        if (appointment.payment) return "green";
-        // if (appointment.payment === "Online") return "green";
-
-        return "yellow";
-    };
-
     // const getStatusColor = (appointment) => {
     //     if (appointment.cancelled) return "red";
     //     if (appointment.isCompleted) return "green";
-    //     if (appointment.payment === "Online" || appointment.payment === "Cash")
-    //         return "green";
-    //     return "yellow"; // Pending
+    //     if (appointment.payment) return "green";
+    //     // if (appointment.payment === "Online") return "green";
+
+    //     // return "yellow";
     // };
 
-
-    const getStatusText = (appointment) => {
-        if (appointment.cancelled) return "Cancelled";
-        if (appointment.isCompleted) return "Completed";
-        if (appointment.payment) return "Confirmed";
-        // if (appointment.payment === "Online") return "Confirmed";
-        return "Pending Payment";
+    const getStatusColor = (appointment) => {
+        if (appointment.cancelled) return "red";
+        if (appointment.isCompleted) return "green";
+        if (appointment.payment === "Online" || appointment.payment === "Cash")
+            return "green";
+        return "yellow"; // Pending
     };
 
     // const getStatusText = (appointment) => {
     //     if (appointment.cancelled) return "Cancelled";
     //     if (appointment.isCompleted) return "Completed";
-    //     if (appointment.payment === "Online" || appointment.payment === "Cash")
-    //         return "Confirmed";
+    //     // if (appointment.payment) return "Confirmed";
+    //     if (appointment.payment === "Online") return "Confirmed";
     //     return "Pending Payment";
     // };
 
-
+    const getStatusText = (appointment) => {
+        if (appointment.cancelled) return "Cancelled";
+        if (appointment.isCompleted) return "Completed";
+        if (appointment.payment === "Online") return "Confirmed";
+        return "Pending Payment";
+    };
 
     const getStatusIcon = (appointment) => {
         if (appointment.cancelled) {
@@ -1357,7 +1353,8 @@ const MyAppointments = () => {
                                                         {!appointment.cancelled &&
                                                             !appointment.isCompleted && (
                                                                 <>
-                                                                    {appointment.payment ? (
+                                                                    {appointment.payment ===
+                                                                    "Pending" ? (
                                                                         <button
                                                                             onClick={() =>
                                                                                 paymentStripe(

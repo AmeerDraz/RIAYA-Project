@@ -300,9 +300,112 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="px-4 py-5 sm:px-6 md:px-8 lg:px-10 max-w-7xl mx-auto">
+        // <div className="px-4 py-5 sm:px-6 md:px-8 lg:px-10 max-w-7xl mx-auto">
+        //     {/* Cards grid */}
+        //     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10">
+        //         {[
+        //             {
+        //                 icon: assets.doctor_icon,
+        //                 label: "Doctors",
+        //                 value: dashData.doctors ?? 0,
+        //             },
+        //             {
+        //                 icon: assets.appointments_icon,
+        //                 label: "Appointments",
+        //                 value: dashData.appointments ?? 0,
+        //             },
+        //             {
+        //                 icon: assets.patients_icon,
+        //                 label: "Patients",
+        //                 value: dashData.patients ?? 0, // لو patients مش موجودة يطبع 0
+        //             },
+        //         ].map(({ icon, label, value }) => (
+        //             <div
+        //                 key={label}
+        //                 className="flex items-center gap-3 sm:gap-4 bg-white p-4 sm:p-5 rounded-lg border shadow-sm hover:shadow-md transition-all"
+        //             >
+        //                 <img
+        //                     src={icon}
+        //                     alt={label}
+        //                     className="w-12 sm:w-14 h-12 sm:h-14 object-contain flex-shrink-0"
+        //                 />
+        //                 <div>
+        //                     <p className="text-lg sm:text-xl font-bold text-gray-700">
+        //                         {value}
+        //                     </p>
+        //                     <p className="text-sm sm:text-base text-gray-500">
+        //                         {label}
+        //                     </p>
+        //                 </div>
+        //             </div>
+        //         ))}
+        //     </div>
+
+        //     {/* Latest Bookings */}
+        //     <div className="bg-white rounded-lg border overflow-hidden shadow-sm">
+        //         <div className="flex items-center gap-2 px-4 py-4 border-b bg-gray-50">
+        //             <img
+        //                 src={assets.list_icon}
+        //                 alt="List icon"
+        //                 className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0"
+        //             />
+        //             <p className="font-semibold text-base sm:text-lg text-gray-700">
+        //                 Latest Bookings
+        //             </p>
+        //         </div>
+
+        //         <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto">
+        //             {dashData.latestAppointments.map((item, index) => (
+        //                 <div
+        //                     key={index}
+        //                     className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 sm:py-4 border-b hover:bg-gray-50 transition-all"
+        //                 >
+        //                     <div className="flex items-center gap-3">
+        //                         <img
+        //                             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover flex-shrink-0"
+        //                             src={item.docData.image}
+        //                             alt={item.docData.name}
+        //                         />
+        //                         <div>
+        //                             <p className="text-sm sm:text-base text-gray-800 font-medium truncate max-w-[200px] sm:max-w-[300px]">
+        //                                 {item.docData.name}
+        //                             </p>
+        //                             <p className="text-xs sm:text-sm text-gray-500">
+        //                                 {slotDateFormat(item.slotDate)}
+        //                             </p>
+        //                         </div>
+        //                     </div>
+
+        //                     {item.cancelled ? (
+        //                         <p className="text-red-500 text-xs sm:text-sm font-semibold text-center sm:text-right">
+        //                             Cancelled
+        //                         </p>
+        //                     ) : item.isCompleted ? (
+        //                         <p className="text-green-500 text-xs font-medium text-center">
+        //                             Completed
+        //                         </p>
+        //                     ) : (
+        //                         <button
+        //                             onClick={() => cancelAppointment(item._id)}
+        //                             className="flex justify-center sm:justify-end"
+        //                             aria-label={`Cancel appointment with ${item.docData.name}`}
+        //                         >
+        //                             <img
+        //                                 className="w-8 h-8 sm:w-9 sm:h-9 cursor-pointer hover:opacity-75 transition-opacity"
+        //                                 src={assets.cancel_icon}
+        //                                 alt="Cancel appointment"
+        //                             />
+        //                         </button>
+        //                     )}
+        //                 </div>
+        //             ))}
+        //         </div>
+        //     </div>
+        // </div>
+
+        <div className="w-full px-4 py-5 sm:px-6 md:px-8 lg:px-10 min-h-screen">
             {/* Cards grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10 w-full">
                 {[
                     {
                         icon: assets.doctor_icon,
@@ -317,19 +420,19 @@ const Dashboard = () => {
                     {
                         icon: assets.patients_icon,
                         label: "Patients",
-                        value: dashData.patients ?? 0, // لو patients مش موجودة يطبع 0
+                        value: dashData.patients ?? 0,
                     },
                 ].map(({ icon, label, value }) => (
                     <div
                         key={label}
-                        className="flex items-center gap-3 sm:gap-4 bg-white p-4 sm:p-5 rounded-lg border shadow-sm hover:shadow-md transition-all"
+                        className="flex items-center gap-3 sm:gap-4 bg-white p-4 sm:p-5 rounded-lg border shadow-sm hover:shadow-md transition-all w-full"
                     >
                         <img
                             src={icon}
                             alt={label}
                             className="w-12 sm:w-14 h-12 sm:h-14 object-contain flex-shrink-0"
                         />
-                        <div>
+                        <div className="w-full">
                             <p className="text-lg sm:text-xl font-bold text-gray-700">
                                 {value}
                             </p>
@@ -342,7 +445,7 @@ const Dashboard = () => {
             </div>
 
             {/* Latest Bookings */}
-            <div className="bg-white rounded-lg border overflow-hidden shadow-sm">
+            <div className="bg-white rounded-lg border overflow-hidden shadow-sm w-full">
                 <div className="flex items-center gap-2 px-4 py-4 border-b bg-gray-50">
                     <img
                         src={assets.list_icon}
@@ -354,19 +457,19 @@ const Dashboard = () => {
                     </p>
                 </div>
 
-                <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto">
+                <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto w-full">
                     {dashData.latestAppointments.map((item, index) => (
                         <div
                             key={index}
-                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 sm:py-4 border-b hover:bg-gray-50 transition-all"
+                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 sm:py-4 border-b hover:bg-gray-50 transition-all w-full"
                         >
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 w-full sm:w-auto">
                                 <img
                                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover flex-shrink-0"
                                     src={item.docData.image}
                                     alt={item.docData.name}
                                 />
-                                <div>
+                                <div className="w-full sm:w-auto">
                                     <p className="text-sm sm:text-base text-gray-800 font-medium truncate max-w-[200px] sm:max-w-[300px]">
                                         {item.docData.name}
                                     </p>
@@ -377,21 +480,21 @@ const Dashboard = () => {
                             </div>
 
                             {item.cancelled ? (
-                                <p className="text-red-500 text-xs sm:text-sm font-semibold text-center sm:text-right">
+                                <p className="text-red-500 text-xs sm:text-sm font-semibold text-center sm:text-right w-full sm:w-auto">
                                     Cancelled
                                 </p>
                             ) : item.isCompleted ? (
-                                <p className="text-green-500 text-xs font-medium text-center">
+                                <p className="text-green-500 text-xs sm:text-sm font-medium text-center w-full sm:w-auto">
                                     Completed
                                 </p>
                             ) : (
                                 <button
                                     onClick={() => cancelAppointment(item._id)}
-                                    className="flex justify-center sm:justify-end"
+                                    className="flex justify-center sm:justify-end w-full sm:w-auto"
                                     aria-label={`Cancel appointment with ${item.docData.name}`}
                                 >
                                     <img
-                                        className="w-8 h-8 sm:w-9 sm:h-9 cursor-pointer hover:opacity-75 transition-opacity"
+                                        className="w-8 h-8 sm:w-10 sm:h-10 cursor-pointer hover:opacity-75 transition-opacity"
                                         src={assets.cancel_icon}
                                         alt="Cancel appointment"
                                     />

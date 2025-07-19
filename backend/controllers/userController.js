@@ -6,6 +6,10 @@ import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
 import Stripe from "stripe";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
+
+
 
 // تسجيل المستخدم
 const registerUser = async (req, res) => {
@@ -57,6 +61,73 @@ const loginUser = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.json({ success: false, message: error.message });
+    }
+};
+
+// POST /forgot-password
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await userModel.findOne({ email });
+        if (!user) return res.status(404).json({ message: "Email not found" });
+
+        const token = crypto.randomBytes(32).toString("hex");
+        const tokenExpiry = Date.now() + 3600000; // 1 hour
+
+        user.resetToken = token;
+        user.resetTokenExpiry = tokenExpiry;
+        await user.save();
+
+        const resetLink = `http://localhost:5173/reset-password/${token}`; // Frontend URL
+
+        // Send email
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+
+        await transporter.sendMail({
+            to: user.email,
+            subject: "Reset your password",
+            html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p>`,
+        });
+
+        res.json({ message: "Password reset link sent to your email" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// POST /reset-password/:token
+ const resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    try {
+        const user = await userModel.findOne({
+            resetToken: token,
+            resetTokenExpiry: { $gt: Date.now() },
+        });
+
+        if (!user)
+            return res
+                .status(400)
+                .json({ message: "Invalid or expired token" });
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        user.resetToken = undefined;
+        user.resetTokenExpiry = undefined;
+        await user.save();
+
+        res.json({ message: "Password has been reset" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
     }
 };
 
@@ -308,10 +379,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const paymentStripe = async (req, res) => {
     try {
-        console.log("-- user id: ", req.userId);
+        // console.log("-- user id: ", req.userId);
         const { appointmentId } = req.body;
 
-        console.log("appointmentId: ", appointmentId);
+        // console.log("appointmentId: ", appointmentId);
 
         // جلب الموعد مع بيانات الطبيب
         const appointment = await appointmentModel
@@ -336,12 +407,6 @@ const paymentStripe = async (req, res) => {
                 .json({ success: false, message: "Appointment not found" });
         }
 
-        // if (appointment.payment) {
-        //     return res
-        //         .status(400)
-        //         .json({ success: false, message: "Already paid" });
-        // }
-
         if (appointment.payment === "Online") {
             return res
                 .status(400)
@@ -365,11 +430,13 @@ const paymentStripe = async (req, res) => {
                 },
             ],
             mode: "payment",
-            success_url: `http://localhost:5173/payment-success?appointmen tId=${appointment._id}`, //اعمل واجهة نجاح عملية الدفع و اربطها هون لحتى يحول المستخدم عليها عند نجاح الدفع  ويلي تحتها واجهة فشل الدفع -- يعني ممكن  تعملها لوجيك
+
+            success_url: `http://localhost:5173/payment-success?appointmentId=${appointment._id}`,
+
             cancel_url: `http://localhost:5173/payment-failed`,
             metadata: {
                 appointmentId: appointment._id.toString(),
-                userId: req.userId?.toString(), // استخدام req.user._id كما في middleware المعدل
+                userId: req.userId?.toString(),
             },
         });
 
@@ -383,7 +450,7 @@ const paymentStripe = async (req, res) => {
 
 const stripeWebhook = async (req, res) => {
     const sig = req.headers["stripe-signature"];
-    console.log("start stripeeeeeeeeeeeeeeeee");
+    console.log("startaaaaaaaaaaaaaa");
     try {
         const event = stripe.webhooks.constructEvent(
             req.body,
@@ -393,21 +460,14 @@ const stripeWebhook = async (req, res) => {
 
         if (event.type === "checkout.session.completed") {
             const session = event.data.object;
-            const appointmentId =
-                session.success_url.split("appointmentId=")[1];
 
-            // await appointmentModel.findByIdAndUpdate(appointmentId, {
-            //     payment: true,
-            // });
+            const appointmentId = session.metadata.appointmentId;
 
             await appointmentModel.findByIdAndUpdate(appointmentId, {
                 payment: "Online",
             });
 
-            console.log(
-                "✅ Payment successful for appointment:",
-                appointmentId
-            );
+            console.log("Payment successful for appointment:", appointmentId);
         }
 
         res.json({ received: true });
@@ -417,38 +477,43 @@ const stripeWebhook = async (req, res) => {
     }
 };
 
-// const stripeWebhook = async (req, res) => {
-//     const sig = req.headers["stripe-signature"];
-// console.log("start webhook");
+/********************************* */
 
-//     try {
-//         const event = stripe.webhooks.constructEvent(
-//             req.body,
-//             sig,
-//             process.env.STRIPE_WEBHOOK_SECRET
-//         );
-// console.log(event.type);
-//         if (event.type === "checkout.session.completed") {
-//             const session = event.data.object;
-//             const appointmentId = session.metadata.appointmentId;
+const confirmPayment = async (req, res) => {
+    const { appointmentId } = req.body;
 
-//             console.log(" Payment  appointmentId :", appointmentId);
-//             await appointmentModel.findByIdAndUpdate(appointmentId, {
-//                 payment: "Online",
-//             });
+    try {
+        if (!appointmentId) {
+            return res
+                .status(400)
+                .json({ success: false, message: "appointmentId is required" });
+        }
 
-//             console.log(
-//                 "✅ Payment successful for appointment:",
-//                 appointmentId
-//             );
-//         }
+        const updated = await appointmentModel.findByIdAndUpdate(
+            appointmentId,
+            { payment: "Online" },
+            { new: true }
+        );
 
-//         res.json({ received: true });
-//     } catch (err) {
-//         console.error("❌ Stripe Webhook Error:", err.message);
-//         res.status(400).send(`Webhook Error: ${err.message}`);
-//     }
-// };
+        if (!updated) {
+            return res
+                .status(404)
+                .json({ success: false, message: "Appointment not found" });
+        }
+
+        res.json({
+            success: true,
+            message: "Payment confirmed successfully",
+            appointment: updated,
+        });
+    } catch (error) {
+        console.error("Error confirming payment:", error);
+        res.status(500).json({
+            success: false,
+            message: "Server error while confirming payment",
+        });
+    }
+};
 
 // Get available slots for a specific doctor (public endpoint)
 const getDoctorAvailableSlots = async (req, res) => {
@@ -655,4 +720,7 @@ export {
     testDoctors,
     paymentStripe,
     stripeWebhook,
+    confirmPayment,
+    forgotPassword,
+    resetPassword,
 };

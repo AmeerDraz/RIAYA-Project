@@ -13,6 +13,8 @@ import Appointment from "./pages/Appointment";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ForgetPassword from "./pages/ForgetPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 import { ToastContainer } from "react-toastify";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFaild from "./pages/PaymentFaild";
@@ -33,6 +35,11 @@ const App = () => {
                         path="/forget-password"
                         element={<ForgetPassword />}
                     />
+                    <Route
+                        path="/reset-password/:token"
+                        element={<ResetPassword />}
+                    />
+
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/my-profile" element={<MyProfile />} />
@@ -58,4 +65,3 @@ const App = () => {
 };
 
 export default App;
-

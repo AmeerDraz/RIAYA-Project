@@ -177,7 +177,9 @@ import {
     getDoctorAvailableSlots,
     testDoctors,
     paymentStripe,
-    stripeWebhook,
+    confirmPayment,
+    forgotPassword,
+    resetPassword,
 } from "../controllers/userController.js";
 
 import {
@@ -205,11 +207,7 @@ userRouter.post("/book-Appointment", authUser, bookAppointment);
 userRouter.get("/appointments", authUser, listAppointment);
 userRouter.delete("/cancel-appointment", authUser, cancelAppointment);
 userRouter.post("/payment-stripe", authUser, paymentStripe);
-userRouter.post(
-    "/stripe-webhook",
-    express.raw({ type: "application/json" }),
-    stripeWebhook
-);
+userRouter.post("/confirm-payment", authUser, confirmPayment);
 
 userRouter.get("/test-doctors", testDoctors);
 
@@ -217,5 +215,11 @@ userRouter.get("/test-doctors", testDoctors);
 userRouter.post("/testimonial/add", authUser, addTestimonial);
 userRouter.get("/testimonial/list", getTestimonials);
 userRouter.put("/testimonial/update/:id", authUser, updateTestimonial); // ✅ جديد
+
+
+/************************** */
+
+userRouter.post("/forgot-password", forgotPassword);
+userRouter.post("/reset-password/:token", resetPassword);
 
 export default userRouter;

@@ -1091,7 +1091,7 @@ import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 
 const DoctorProfile = () => {
-    console.log("DoctorProfile component is rendering...");
+    // console.log("DoctorProfile component is rendering...");
 
     const { dToken, profileData, setProfileData, getProfileData, backendUrl } =
         useContext(DoctorContext);
@@ -1185,7 +1185,7 @@ const DoctorProfile = () => {
                 available: formData.available,
             };
 
-            console.log("Updating profile with data:", updateData);
+            // console.log("Updating profile with data:", updateData);
 
             const { data } = await axios.post(
                 backendUrl + "/api/doctor/update-profile",
@@ -1416,11 +1416,11 @@ const DoctorProfile = () => {
         }
     }, [dToken]);
 
-    console.log("DoctorProfile: Current state:", {
-        loading,
-        profileData,
-        dToken: !!dToken,
-    });
+    // console.log("DoctorProfile: Current state:", {
+    //     loading,
+    //     profileData,
+    //     dToken: !!dToken,
+    // });
 
     if (loading) return <Loader />;
 
@@ -1467,26 +1467,522 @@ const DoctorProfile = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-6xl mx-auto">
+        // <div className="min-h-screen bg-gray-50 p-6">
+        //     <div className="max-w-6xl mx-auto">
+        //         {/* Header */}
+        //         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+        //             <h1 className="text-2xl font-bold text-gray-800 mb-2">
+        //                 Doctor Profile
+        //             </h1>
+        //             <p className="text-gray-600">
+        //                 Manage your profile information and working hours
+        //             </p>
+        //         </div>
+
+        //         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        //             {/* Profile Information */}
+        //             <div className="lg:col-span-1">
+        //                 <div className="bg-white rounded-lg shadow-sm p-6">
+        //                     {/* Profile Image */}
+        //                     <div className="text-center mb-6">
+        //                         <img
+        //                             className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-green-100"
+        //                             src={
+        //                                 profileData.image ||
+        //                                 "/images/default-avatar.png"
+        //                             }
+        //                             alt={profileData.name || "Doctor"}
+        //                         />
+        //                     </div>
+
+        //                     {/* Basic Info */}
+        //                     <div className="space-y-4">
+        //                         <div>
+        //                             {isEdit ? (
+        //                                 <div className="space-y-3">
+        //                                     <input
+        //                                         type="text"
+        //                                         name="name"
+        //                                         value={formData.name}
+        //                                         onChange={handleInputChange}
+        //                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-xl font-semibold"
+        //                                         placeholder="Doctor Name"
+        //                                     />
+        //                                     <div className="grid grid-cols-2 gap-2">
+        //                                         <input
+        //                                             type="text"
+        //                                             name="degree"
+        //                                             value={formData.degree}
+        //                                             onChange={handleInputChange}
+        //                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+        //                                             placeholder="Degree"
+        //                                         />
+        //                                         <input
+        //                                             type="text"
+        //                                             name="speciality"
+        //                                             value={formData.speciality}
+        //                                             onChange={handleInputChange}
+        //                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+        //                                             placeholder="Speciality"
+        //                                         />
+        //                                     </div>
+        //                                     <input
+        //                                         type="number"
+        //                                         name="experience"
+        //                                         value={formData.experience}
+        //                                         onChange={handleInputChange}
+        //                                         min="0"
+        //                                         max="50"
+        //                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+        //                                         placeholder="Years of Experience"
+        //                                     />
+        //                                 </div>
+        //                             ) : (
+        //                                 <div>
+        //                                     <h2 className="text-xl font-semibold text-gray-800">
+        //                                         {profileData.name}
+        //                                     </h2>
+        //                                     <p className="text-gray-600">
+        //                                         {profileData.degree} -{" "}
+        //                                         {profileData.speciality}
+        //                                     </p>
+        //                                     <span className="inline-block bg-green-100 text-green-500 text-xs px-2 py-1 rounded-full mt-1">
+        //                                         {parseInt(
+        //                                             profileData.experience
+        //                                         ) || 0}
+        //                                         Years Experience
+        //                                     </span>
+        //                                 </div>
+        //                             )}
+        //                         </div>
+
+        //                         <div>
+        //                             <h3 className="font-medium text-gray-800 mb-2">
+        //                                 About
+        //                             </h3>
+        //                             {isEdit ? (
+        //                                 <textarea
+        //                                     name="about"
+        //                                     value={formData.about}
+        //                                     onChange={handleInputChange}
+        //                                     rows={4}
+        //                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm"
+        //                                     placeholder="Tell us about yourself..."
+        //                                 />
+        //                             ) : (
+        //                                 <p className="text-sm text-gray-600 leading-relaxed">
+        //                                     {profileData.about}
+        //                                 </p>
+        //                             )}
+        //                         </div>
+
+        //                         <div>
+        //                             <h3 className="font-medium text-gray-800 mb-2">
+        //                                 Appointment Fee
+        //                             </h3>
+        //                             {isEdit ? (
+        //                                 <input
+        //                                     type="number"
+        //                                     name="fees"
+        //                                     value={formData.fees}
+        //                                     onChange={handleInputChange}
+        //                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+        //                                     placeholder="Enter appointment fee"
+        //                                 />
+        //                             ) : (
+        //                                 <div className="flex items-center">
+        //                                     <span className="text-lg font-semibold text-green-600">
+        //                                         {currency} {profileData.fees}
+        //                                     </span>
+        //                                 </div>
+        //                             )}
+        //                         </div>
+
+        //                         <div>
+        //                             <h3 className="font-medium text-gray-800 mb-2">
+        //                                 Address
+        //                             </h3>
+        //                             {isEdit ? (
+        //                                 <div className="space-y-2">
+        //                                     <input
+        //                                         type="text"
+        //                                         name="address.line1"
+        //                                         value={formData.address.line1}
+        //                                         onChange={handleInputChange}
+        //                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+        //                                         placeholder="Address Line 1"
+        //                                     />
+        //                                     <input
+        //                                         type="text"
+        //                                         name="address.line2"
+        //                                         value={formData.address.line2}
+        //                                         onChange={handleInputChange}
+        //                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+        //                                         placeholder="Address Line 2 (optional)"
+        //                                     />
+        //                                 </div>
+        //                             ) : (
+        //                                 <p className="text-sm text-gray-600">
+        //                                     {profileData.address?.line1}
+        //                                     {profileData.address?.line2 && (
+        //                                         <>
+        //                                             <br />
+        //                                             {profileData.address.line2}
+        //                                         </>
+        //                                     )}
+        //                                 </p>
+        //                             )}
+        //                         </div>
+
+        //                         <div className="flex items-center">
+        //                             <input
+        //                                 onChange={handleInputChange}
+        //                                 checked={formData.available}
+        //                                 type="checkbox"
+        //                                 id="available-checkbox"
+        //                                 name="available"
+        //                                 className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+        //                             />
+        //                             <label
+        //                                 htmlFor="available-checkbox"
+        //                                 className="ml-2 text-sm font-medium text-gray-700"
+        //                             >
+        //                                 Available for appointments
+        //                             </label>
+        //                         </div>
+
+        //                         {isEdit ? (
+        //                             <div className="space-y-2">
+        //                                 <button
+        //                                     onClick={updateProfile}
+        //                                     disabled={loading}
+        //                                     className="w-full bg-primary text-white py-2 px-4 rounded-lg hover:opacity-85 transition-colors disabled:opacity-50"
+        //                                 >
+        //                                     {loading
+        //                                         ? "Saving..."
+        //                                         : "Save Changes"}
+        //                                 </button>
+        //                                 <button
+        //                                     onClick={() => {
+        //                                         setIsEdit(false);
+        //                                         // Reset form data to original values
+        //                                         if (profileData) {
+        //                                             setFormData({
+        //                                                 name:
+        //                                                     profileData.name ||
+        //                                                     "",
+        //                                                 experience:
+        //                                                     parseInt(
+        //                                                         profileData.experience
+        //                                                     ) || 0,
+        //                                                 speciality:
+        //                                                     profileData.speciality ||
+        //                                                     "",
+        //                                                 degree:
+        //                                                     profileData.degree ||
+        //                                                     "",
+        //                                                 about:
+        //                                                     profileData.about ||
+        //                                                     "",
+        //                                                 fees:
+        //                                                     profileData.fees ||
+        //                                                     0,
+        //                                                 available:
+        //                                                     profileData.available ||
+        //                                                     true,
+        //                                                 address: {
+        //                                                     line1:
+        //                                                         profileData
+        //                                                             .address
+        //                                                             ?.line1 ||
+        //                                                         "",
+        //                                                     line2:
+        //                                                         profileData
+        //                                                             .address
+        //                                                             ?.line2 ||
+        //                                                         "",
+        //                                                 },
+        //                                             });
+        //                                         }
+        //                                     }}
+        //                                     className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+        //                                 >
+        //                                     Cancel
+        //                                 </button>
+        //                             </div>
+        //                         ) : (
+        //                             <button
+        //                                 onClick={() => setIsEdit(true)}
+        //                                 className="w-full border border-green-600 text-green-600 py-2 px-4 rounded-lg hover:bg-green-50 transition-colors"
+        //                             >
+        //                                 Edit Profile
+        //                             </button>
+        //                         )}
+        //                     </div>
+        //                 </div>
+        //             </div>
+
+        //             {/* Working Hours Settings */}
+        //             <div className="lg:col-span-2">
+        //                 <div className="bg-white rounded-lg shadow-sm p-6">
+        //                     <div className="flex items-center justify-between mb-6">
+        //                         <div>
+        //                             <h2 className="text-xl font-semibold text-gray-800">
+        //                                 Working Hours
+        //                             </h2>
+        //                             <p className="text-gray-600">
+        //                                 Set your availability for each day of
+        //                                 the week
+        //                             </p>
+        //                         </div>
+        //                         <div className="flex space-x-2">
+        //                             <button
+        //                                 onClick={() => {
+        //                                     const allEnabled = Object.values(
+        //                                         slotsSettings.workingHours
+        //                                     ).every((day) => day.enabled);
+        //                                     setSlotsSettings((prev) => ({
+        //                                         ...prev,
+        //                                         workingHours:
+        //                                             Object.fromEntries(
+        //                                                 Object.entries(
+        //                                                     prev.workingHours
+        //                                                 ).map(
+        //                                                     ([day, times]) => [
+        //                                                         day,
+        //                                                         {
+        //                                                             ...times,
+        //                                                             enabled:
+        //                                                                 !allEnabled,
+        //                                                         },
+        //                                                     ]
+        //                                                 )
+        //                                             ),
+        //                                     }));
+        //                                 }}
+        //                                 className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+        //                             >
+        //                                 {Object.values(
+        //                                     slotsSettings.workingHours
+        //                                 ).every((day) => day.enabled)
+        //                                     ? "Disable All"
+        //                                     : "Enable All"}
+        //                             </button>
+        //                         </div>
+        //                     </div>
+
+        //                     <div className="space-y-4">
+        //                         {days.map(({ key, label }) => (
+        //                             <div
+        //                                 key={key}
+        //                                 className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+        //                             >
+        //                                 <div className="flex items-center space-x-3">
+        //                                     <input
+        //                                         type="checkbox"
+        //                                         checked={
+        //                                             slotsSettings.workingHours[
+        //                                                 key
+        //                                             ]?.enabled || false
+        //                                         }
+        //                                         onChange={(e) =>
+        //                                             setSlotsSettings(
+        //                                                 (prev) => ({
+        //                                                     ...prev,
+        //                                                     workingHours: {
+        //                                                         ...prev.workingHours,
+        //                                                         [key]: {
+        //                                                             ...prev
+        //                                                                 .workingHours[
+        //                                                                 key
+        //                                                             ],
+        //                                                             enabled:
+        //                                                                 e.target
+        //                                                                     .checked,
+        //                                                         },
+        //                                                     },
+        //                                                 })
+        //                                             )
+        //                                         }
+        //                                         className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+        //                                     />
+        //                                     <span className="font-medium text-gray-700 min-w-[80px]">
+        //                                         {label}
+        //                                     </span>
+        //                                 </div>
+
+        //                                 {slotsSettings.workingHours[key]
+        //                                     ?.enabled && (
+        //                                     <div className="flex items-center space-x-2">
+        //                                         <input
+        //                                             type="time"
+        //                                             value={
+        //                                                 slotsSettings
+        //                                                     .workingHours[key]
+        //                                                     ?.from || "09:00"
+        //                                             }
+        //                                             onChange={(e) =>
+        //                                                 setSlotsSettings(
+        //                                                     (prev) => ({
+        //                                                         ...prev,
+        //                                                         workingHours: {
+        //                                                             ...prev.workingHours,
+        //                                                             [key]: {
+        //                                                                 ...prev
+        //                                                                     .workingHours[
+        //                                                                     key
+        //                                                                 ],
+        //                                                                 from: e
+        //                                                                     .target
+        //                                                                     .value,
+        //                                                             },
+        //                                                         },
+        //                                                     })
+        //                                                 )
+        //                                             }
+        //                                             className="border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+        //                                         />
+        //                                         <span className="text-gray-500">
+        //                                             to
+        //                                         </span>
+        //                                         <input
+        //                                             type="time"
+        //                                             value={
+        //                                                 slotsSettings
+        //                                                     .workingHours[key]
+        //                                                     ?.to || "17:00"
+        //                                             }
+        //                                             onChange={(e) =>
+        //                                                 setSlotsSettings(
+        //                                                     (prev) => ({
+        //                                                         ...prev,
+        //                                                         workingHours: {
+        //                                                             ...prev.workingHours,
+        //                                                             [key]: {
+        //                                                                 ...prev
+        //                                                                     .workingHours[
+        //                                                                     key
+        //                                                                 ],
+        //                                                                 to: e
+        //                                                                     .target
+        //                                                                     .value,
+        //                                                             },
+        //                                                         },
+        //                                                     })
+        //                                                 )
+        //                                             }
+        //                                             className="border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+        //                                         />
+        //                                     </div>
+        //                                 )}
+        //                             </div>
+        //                         ))}
+
+        //                         {/* Summary Section */}
+        //                         <div className="border-t pt-4 mt-6">
+        //                             <div className="bg-green-50 p-4 rounded-lg mb-4">
+        //                                 <h4 className="font-medium text-primary mb-2">
+        //                                     Working Hours Summary
+        //                                 </h4>
+        //                                 <div className="text-sm text-primary/90">
+        //                                     <p>
+        //                                         Enabled days:{" "}
+        //                                         {
+        //                                             Object.values(
+        //                                                 slotsSettings.workingHours
+        //                                             ).filter(
+        //                                                 (day) => day.enabled
+        //                                             ).length
+        //                                         }
+        //                                         /7
+        //                                     </p>
+        //                                     <p>
+        //                                         Appointment duration:{" "}
+        //                                         {slotsSettings.slotDuration}{" "}
+        //                                         minutes
+        //                                     </p>
+        //                                 </div>
+        //                             </div>
+
+        //                             <div className="flex items-center justify-between">
+        //                                 <div>
+        //                                     <label className="block text-sm font-medium text-gray-700 mb-2">
+        //                                         Appointment Duration
+        //                                     </label>
+        //                                     <select
+        //                                         value={
+        //                                             slotsSettings.slotDuration
+        //                                         }
+        //                                         onChange={(e) =>
+        //                                             setSlotsSettings(
+        //                                                 (prev) => ({
+        //                                                     ...prev,
+        //                                                     slotDuration:
+        //                                                         parseInt(
+        //                                                             e.target
+        //                                                                 .value
+        //                                                         ),
+        //                                                 })
+        //                                             )
+        //                                         }
+        //                                         className="border border-gray-300 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-green-300 focus:border-green-300 outline-none"
+        //                                     >
+        //                                         <option
+        //                                             className="hover:bg-green-100"
+        //                                             value={15}
+        //                                         >
+        //                                             15 minutes
+        //                                         </option>
+        //                                         <option value={30}>
+        //                                             30 minutes
+        //                                         </option>
+        //                                         <option value={45}>
+        //                                             45 minutes
+        //                                         </option>
+        //                                         <option value={60}>
+        //                                             60 minutes
+        //                                         </option>
+        //                                     </select>
+        //                                 </div>
+
+        //                                 <button
+        //                                     onClick={updateSlotsSettings}
+        //                                     disabled={savingSlots}
+        //                                     className="bg-primary text-white py-2 px-6 rounded-lg hover:opacity-85 transition-colors disabled:opacity-50"
+        //                                 >
+        //                                     {savingSlots
+        //                                         ? "Saving..."
+        //                                         : "Save Working Hours"}
+        //                                 </button>
+        //                             </div>
+        //                         </div>
+        //                     </div>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //     </div>
+        // </div>
+
+        <div className="min-h-screen bg-gray-50 p-4 sm:p-6 mr-4 h-[90vh] w-full overflow-scroll">
+            <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6">
+                    <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
                         Doctor Profile
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 text-sm sm:text-base">
                         Manage your profile information and working hours
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
                     {/* Profile Information */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white rounded-lg shadow-sm p-6">
+                        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
                             {/* Profile Image */}
-                            <div className="text-center mb-6">
+                            <div className="text-center mb-4 sm:mb-6">
                                 <img
-                                    className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-green-100"
+                                    className="w-24 h-24 sm:w-32 sm:h-32 rounded-full mx-auto object-cover border-4 border-green-100"
                                     src={
                                         profileData.image ||
                                         "/images/default-avatar.png"
@@ -1505,10 +2001,10 @@ const DoctorProfile = () => {
                                                 name="name"
                                                 value={formData.name}
                                                 onChange={handleInputChange}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-xl font-semibold"
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg sm:text-xl font-semibold"
                                                 placeholder="Doctor Name"
                                             />
-                                            <div className="grid grid-cols-2 gap-2">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                                 <input
                                                     type="text"
                                                     name="degree"
@@ -1539,14 +2035,14 @@ const DoctorProfile = () => {
                                         </div>
                                     ) : (
                                         <div>
-                                            <h2 className="text-xl font-semibold text-gray-800">
+                                            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
                                                 {profileData.name}
                                             </h2>
-                                            <p className="text-gray-600">
+                                            <p className="text-gray-600 text-sm sm:text-base">
                                                 {profileData.degree} -{" "}
                                                 {profileData.speciality}
                                             </p>
-                                            <span className="inline-block bg-green-100 text-green-500 text-xs px-2 py-1 rounded-full mt-1">
+                                            <span className="inline-block bg-green-100 text-green-500 text-xs sm:text-sm px-2 py-1 rounded-full mt-1">
                                                 {parseInt(
                                                     profileData.experience
                                                 ) || 0}
@@ -1557,7 +2053,7 @@ const DoctorProfile = () => {
                                 </div>
 
                                 <div>
-                                    <h3 className="font-medium text-gray-800 mb-2">
+                                    <h3 className="font-medium text-gray-800 mb-2 text-sm sm:text-base">
                                         About
                                     </h3>
                                     {isEdit ? (
@@ -1577,7 +2073,7 @@ const DoctorProfile = () => {
                                 </div>
 
                                 <div>
-                                    <h3 className="font-medium text-gray-800 mb-2">
+                                    <h3 className="font-medium text-gray-800 mb-2 text-sm sm:text-base">
                                         Appointment Fee
                                     </h3>
                                     {isEdit ? (
@@ -1591,7 +2087,7 @@ const DoctorProfile = () => {
                                         />
                                     ) : (
                                         <div className="flex items-center">
-                                            <span className="text-lg font-semibold text-green-600">
+                                            <span className="text-base sm:text-lg font-semibold text-green-600">
                                                 {currency} {profileData.fees}
                                             </span>
                                         </div>
@@ -1599,7 +2095,7 @@ const DoctorProfile = () => {
                                 </div>
 
                                 <div>
-                                    <h3 className="font-medium text-gray-800 mb-2">
+                                    <h3 className="font-medium text-gray-800 mb-2 text-sm sm:text-base">
                                         Address
                                     </h3>
                                     {isEdit ? (
@@ -1665,7 +2161,6 @@ const DoctorProfile = () => {
                                         <button
                                             onClick={() => {
                                                 setIsEdit(false);
-                                                // Reset form data to original values
                                                 if (profileData) {
                                                     setFormData({
                                                         name:
@@ -1724,18 +2219,18 @@ const DoctorProfile = () => {
 
                     {/* Working Hours Settings */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <div className="flex items-center justify-between mb-6">
+                        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
                                 <div>
-                                    <h2 className="text-xl font-semibold text-gray-800">
+                                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
                                         Working Hours
                                     </h2>
-                                    <p className="text-gray-600">
+                                    <p className="text-gray-600 text-sm sm:text-base">
                                         Set your availability for each day of
                                         the week
                                     </p>
                                 </div>
-                                <div className="flex space-x-2">
+                                <div className="mt-2 sm:mt-0 flex sm:space-x-2">
                                     <button
                                         onClick={() => {
                                             const allEnabled = Object.values(
@@ -1760,7 +2255,7 @@ const DoctorProfile = () => {
                                                     ),
                                             }));
                                         }}
-                                        className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                                        className="w-full sm:w-auto px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors"
                                     >
                                         {Object.values(
                                             slotsSettings.workingHours
@@ -1775,9 +2270,9 @@ const DoctorProfile = () => {
                                 {days.map(({ key, label }) => (
                                     <div
                                         key={key}
-                                        className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                                        className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                                     >
-                                        <div className="flex items-center space-x-3">
+                                        <div className="flex items-center space-x-3 mb-2 sm:mb-0">
                                             <input
                                                 type="checkbox"
                                                 checked={
@@ -1806,14 +2301,14 @@ const DoctorProfile = () => {
                                                 }
                                                 className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
                                             />
-                                            <span className="font-medium text-gray-700 min-w-[80px]">
+                                            <span className="font-medium text-gray-700 min-w-[80px] text-sm sm:text-base">
                                                 {label}
                                             </span>
                                         </div>
 
                                         {slotsSettings.workingHours[key]
                                             ?.enabled && (
-                                            <div className="flex items-center space-x-2">
+                                            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
                                                 <input
                                                     type="time"
                                                     value={
@@ -1840,9 +2335,9 @@ const DoctorProfile = () => {
                                                             })
                                                         )
                                                     }
-                                                    className="border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                                    className="w-full sm:w-auto border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                                 />
-                                                <span className="text-gray-500">
+                                                <span className="text-gray-500 my-2 sm:my-0 sm:mx-2 text-sm sm:text-base">
                                                     to
                                                 </span>
                                                 <input
@@ -1871,7 +2366,7 @@ const DoctorProfile = () => {
                                                             })
                                                         )
                                                     }
-                                                    className="border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                                    className="w-full sm:w-auto border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                                 />
                                             </div>
                                         )}
@@ -1881,7 +2376,7 @@ const DoctorProfile = () => {
                                 {/* Summary Section */}
                                 <div className="border-t pt-4 mt-6">
                                     <div className="bg-green-50 p-4 rounded-lg mb-4">
-                                        <h4 className="font-medium text-primary mb-2">
+                                        <h4 className="font-medium text-primary mb-2 text-sm sm:text-base">
                                             Working Hours Summary
                                         </h4>
                                         <div className="text-sm text-primary/90">
@@ -1904,8 +2399,8 @@ const DoctorProfile = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between">
-                                        <div>
+                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="mb-4 sm:mb-0">
                                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                                 Appointment Duration
                                             </label>
@@ -1925,12 +2420,9 @@ const DoctorProfile = () => {
                                                         })
                                                     )
                                                 }
-                                                className="border border-gray-300 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-green-300 focus:border-green-300 outline-none"
+                                                className="w-full sm:w-auto border border-gray-300 rounded px-3 py-2 text-sm focus:ring-1 focus:ring-green-300 focus:border-green-300 outline-none"
                                             >
-                                                <option
-                                                    className="hover:bg-green-100"
-                                                    value={15}
-                                                >
+                                                <option value={15}>
                                                     15 minutes
                                                 </option>
                                                 <option value={30}>
@@ -1948,7 +2440,7 @@ const DoctorProfile = () => {
                                         <button
                                             onClick={updateSlotsSettings}
                                             disabled={savingSlots}
-                                            className="bg-primary text-white py-2 px-6 rounded-lg hover:opacity-85 transition-colors disabled:opacity-50"
+                                            className="w-full sm:w-auto bg-primary text-white py-2 px-6 rounded-lg hover:opacity-85 transition-colors disabled:opacity-50"
                                         >
                                             {savingSlots
                                                 ? "Saving..."
