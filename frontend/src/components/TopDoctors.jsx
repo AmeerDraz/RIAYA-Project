@@ -23,7 +23,7 @@ const TopDoctors = () => {
                         key={index}
                     >
                         <img
-                            className="bg-green-50  h-[220px] w-[260px] object-cover object-top "
+                            className="bg-green-50  h-[220px] w-[260px] sm:w-full object-cover object-top "
                             src={item.image}
                             alt=""
                         />

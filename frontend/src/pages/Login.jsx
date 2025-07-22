@@ -277,11 +277,10 @@ const Login = () => {
                                     : "Login"}
                             </p>
                             <p>
-                                Please{" "}
+                                Please
                                 {state === "Sign Up" ? "sign up" : "log in"} to
                                 book appointment
                             </p>
-
                             {state === "Sign Up" && (
                                 <div className="w-full">
                                     <p>Full Name</p>
@@ -299,13 +298,27 @@ const Login = () => {
 
                             <div className="w-full">
                                 <p>Email</p>
-                                <input
-                                    className="border border-zinc-300 rounded w-full p-2 mt-1"
-                                    type="email"
-                                    placeholder="email@example.com"
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    value={email}
-                                />
+                                {state === "Sign Up" ? (
+                                    <input
+                                        className="border border-zinc-300 rounded w-full p-2 mt-1"
+                                        type="email"
+                                        placeholder="Enter a valid and real email"
+                                        onChange={(e) =>
+                                            setEmail(e.target.value)
+                                        }
+                                        value={email}
+                                    />
+                                ) : (
+                                    <input
+                                        className="border border-zinc-300 rounded w-full p-2 mt-1"
+                                        type="email"
+                                        placeholder="email@example.com"
+                                        onChange={(e) =>
+                                            setEmail(e.target.value)
+                                        }
+                                        value={email}
+                                    />
+                                )}
                             </div>
 
                             <div className="w-full">

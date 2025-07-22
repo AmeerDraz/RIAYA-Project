@@ -8,8 +8,11 @@ import appointmentModel from "../models/appointmentModel.js";
 import Stripe from "stripe";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
+// const { Resend } = require("resend");
 
+const resend = new Resend("re_KrYtKy8x_Gk3kUTKDeDuVmXYWr8pG1iCW");
 
 // تسجيل المستخدم
 const registerUser = async (req, res) => {
@@ -66,34 +69,59 @@ const loginUser = async (req, res) => {
 
 // POST /forgot-password
 const forgotPassword = async (req, res) => {
+    console.log("start fnssssssssssssssssssssssss");
     const { email } = req.body;
     try {
+        console.log("second");
         const user = await userModel.findOne({ email });
-        if (!user) return res.status(404).json({ message: "Email not found" });
+        // console.log("user:", user);
 
+        if (!user) return res.status(404).json({ message: "Email not found" });
         const token = crypto.randomBytes(32).toString("hex");
+        console.log("token:", token);
+
         const tokenExpiry = Date.now() + 3600000; // 1 hour
 
         user.resetToken = token;
         user.resetTokenExpiry = tokenExpiry;
         await user.save();
+        console.log("user after save:");
 
-        const resetLink = `http://localhost:5173/reset-password/${token}`; // Frontend URL
+        const resetLink = `http://localhost:5174/reset-password/${token}`; // Frontend URL
+        // console.log(process.env.EMAIL_USER);
+        // console.log(process.env.EMAIL_USER);
 
         // Send email
         const transporter = nodemailer.createTransport({
             service: "gmail",
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS,
             },
+            logger: true,
+            debug: true,
+        });
+        console.log("before sending msg");
+        console.log("user email:", user.email);
+        // await transporter.sendMail({
+        // await resend.emails.send({
+        //     from: '"MyApp Support Team" <0d1cb88b49@emaily.pro>',
+        //     to: user.email,
+        //     subject: "Reset your password",
+        //     html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p>`,
+        // });
+
+        await resend.emails.send({
+            from: "onboarding@resend.dev",
+            to: "ameerabudraz1@gmail.com",
+            subject: "Hello World",
+            html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p> `,
         });
 
-        await transporter.sendMail({
-            to: user.email,
-            subject: "Reset your password",
-            html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p>`,
-        });
+        console.log("sent email to:", user.email);
 
         res.json({ message: "Password reset link sent to your email" });
     } catch (err) {
@@ -103,7 +131,7 @@ const forgotPassword = async (req, res) => {
 };
 
 // POST /reset-password/:token
- const resetPassword = async (req, res) => {
+const resetPassword = async (req, res) => {
     const { token } = req.params;
     const { password } = req.body;
 
