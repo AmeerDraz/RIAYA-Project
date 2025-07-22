@@ -12,7 +12,7 @@ import { Resend } from "resend";
 
 // const { Resend } = require("resend");
 
-const resend = new Resend("re_KrYtKy8x_Gk3kUTKDeDuVmXYWr8pG1iCW");
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // تسجيل المستخدم
 const registerUser = async (req, res) => {
@@ -115,9 +115,11 @@ const forgotPassword = async (req, res) => {
         // });
 
         await resend.emails.send({
+            // from: "support@yiaya.ps",
             from: "onboarding@resend.dev",
-            to: "ameerabudraz1@gmail.com",
-            subject: "Hello World",
+            to: user.email,
+            // to: "ameerdraz55@gmail.com",
+            subject: "Reset your password",
             html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p> `,
         });
 
