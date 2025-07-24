@@ -1,30 +1,3 @@
-// import mongoose from "mongoose";
-
-// const testimonialSchema = new mongoose.Schema(
-//     {
-//         user: {
-//             type: mongoose.Schema.Types.ObjectId,
-//             ref: "user",
-//             required: true,
-//         },
-//         text: {
-//             type: String,
-//             required: true,
-//         },
-//         location: {
-//             type: String,
-//             default: "",
-//         },
-//     },
-//     { timestamps: true }
-// );
-
-// const testimonialModel =
-//     mongoose.models.Testimonial ||
-//     mongoose.model("Testimonial", testimonialSchema);
-
-// export default testimonialModel;
-
 
 import mongoose from "mongoose";
 

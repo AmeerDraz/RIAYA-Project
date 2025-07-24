@@ -1,92 +1,9 @@
-// import testimonialModel from "../models/testimonialModel.js";
-
-// export const addTestimonial = async (req, res) => {
-//     try {
-//         const { name, location, text, image } = req.body;
-
-//         if (!name || !location || !text) {
-//             return res
-//                 .status(400)
-//                 .json({ success: false, message: "Please fill all fields" });
-//         }
-
-//         const testimonial = new testimonialModel({
-//             name,
-//             location,
-//             text,
-//             image: image || "/anonymous-avatar.png",
-//         });
-
-//         await testimonial.save();
-
-//         res.status(201).json({
-//             success: true,
-//             message: "Testimonial added successfully",
-//         });
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).json({ success: false, message: "Server Error" });
-//     }
-// };
-
-
-
-// import testimonialModel from "../models/testimonialModel.js";
-// import {userModel} from "../models/userModel.js"; // لا تنسى
-
-// // إضافة تقييم جديد
-// export const addTestimonial = async (req, res) => {
-//     try {
-//         const userId = req.userId;
-//         const { text } = req.body;
-
-//         if (!text) {
-//             return res
-//                 .status(400)
-//                 .json({
-//                     success: false,
-//                     message: "Please write your testimonial.",
-//                 });
-//         }
-
-//         const testimonial = new testimonialModel({
-//             user: userId,
-//             text,
-//         });
-
-//         await testimonial.save();
-
-//         res.status(201).json({
-//             success: true,
-//             message: "Testimonial submitted successfully.",
-//             testimonial,
-//         });
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).json({ success: false, message: "Server Error" });
-//     }
-// };
-
-// // جلب التقييمات
-// export const getTestimonials = async (req, res) => {
-//     try {
-//         const testimonials = await testimonialModel
-//             .find()
-//             .populate("user", "name image")
-//             .sort({ createdAt: -1 });
-
-//         res.status(200).json({ success: true, testimonials });
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).json({ success: false, message: "Server Error" });
-//     }
-// };
-
 
 import testimonialModel from "../models/testimonialModel.js";
-import { userModel } from "../models/userModel.js"; // لا تنسى
+import { userModel } from "../models/userModel.js"; 
 
-// إضافة تقييم جديد
+
+
 export const addTestimonial = async (req, res) => {
     try {
         const userId = req.userId;
