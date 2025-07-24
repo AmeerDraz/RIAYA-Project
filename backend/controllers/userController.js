@@ -68,6 +68,7 @@ const loginUser = async (req, res) => {
 };
 
 // POST /forgot-password
+
 const forgotPassword = async (req, res) => {
     console.log("start fnssssssssssssssssssssssss");
     const { email } = req.body;
@@ -87,7 +88,7 @@ const forgotPassword = async (req, res) => {
         await user.save();
         console.log("user after save:");
 
-        const resetLink = `http://localhost:5174/reset-password/${token}`; // Frontend URL
+        const resetLink = `http://localhost:5173/reset-password/${token}`; // Frontend URL
         // console.log(process.env.EMAIL_USER);
         // console.log(process.env.EMAIL_USER);
 
@@ -104,6 +105,8 @@ const forgotPassword = async (req, res) => {
             logger: true,
             debug: true,
         });
+        console.log("prcEm", process.env.EMAIL_USER);
+        console.log("prcps", process.env.EMAIL_PASS);
         console.log("before sending msg");
         console.log("user email:", user.email);
         // await transporter.sendMail({
@@ -115,10 +118,11 @@ const forgotPassword = async (req, res) => {
         // });
 
         await resend.emails.send({
-            // from: "support@yiaya.ps",
+            // from: process.env.EMAIL_USER,
             from: "onboarding@resend.dev",
-            to: user.email,
-            // to: "ameerdraz55@gmail.com",
+            // to: user.email,
+            to: "ameerdraz55@gmail.com",
+            // to: "montherismail90@gmail.com",
             subject: "Reset your password",
             html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p> `,
         });
@@ -131,6 +135,61 @@ const forgotPassword = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
+
+// const forgotPassword = async (req, res) => {
+//     console.log("🔁 Start forgotPassword function");
+
+//     const { email } = req.body;
+
+//     try {
+//         const user = await userModel.findOne({ email });
+
+//         if (!user) {
+//             return res.status(404).json({ message: "Email not found" });
+//         }
+
+//         const token = crypto.randomBytes(32).toString("hex");
+//         const tokenExpiry = Date.now() + 3600000; // 1 hour
+
+//         user.resetToken = token;
+//         user.resetTokenExpiry = tokenExpiry;
+//         await user.save();
+
+//         const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+//         console.log("🔗 Reset link:", resetLink);
+
+//         // إعداد nodemailer
+//         const transporter = nodemailer.createTransport({
+//             service: "gmail",
+//             host: "smtp.gmail.com",
+//             port: 587,
+//             secure: false,
+//             auth: {
+//                 user: process.env.EMAIL_USER,
+//                 pass: process.env.EMAIL_PASS,
+//             },
+//         });
+
+//         try {
+//             const info = await transporter.sendMail({
+//                 from: process.env.EMAIL_USER,
+//                 to: user.email,
+//                 subject: "Reset your password",
+//                 html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p>`,
+//             });
+
+//             console.log("✅ Email sent:", info.response);
+
+//             res.json({ message: "Password reset link sent to your email" });
+//         } catch (emailErr) {
+//             console.error("Failed to send email:", emailErr);
+//             res.status(500).json({ message: "Failed to send reset email" });
+//         }
+//     } catch (err) {
+//         console.error("Server error:", err);
+//         res.status(500).json({ message: "Server error" });
+//     }
+// };
 
 // POST /reset-password/:token
 const resetPassword = async (req, res) => {
