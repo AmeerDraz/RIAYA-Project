@@ -2,9 +2,6 @@ import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-//فصلتها و استبدلتها بما داخل ال api
-// import { doctors } from './../assets/assets';
-
 export const AppContext = createContext();
 
 const AppContextProvider = (props) => {

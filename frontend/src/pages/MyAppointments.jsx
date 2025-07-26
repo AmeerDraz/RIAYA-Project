@@ -38,14 +38,6 @@ const MyAppointments = () => {
         }`;
     };
 
-    // const getStatusColor = (appointment) => {
-    //     if (appointment.cancelled) return "red";
-    //     if (appointment.isCompleted) return "green";
-    //     if (appointment.payment) return "green";
-    //     // if (appointment.payment === "Online") return "green";
-
-    //     // return "yellow";
-    // };
 
     const getStatusColor = (appointment) => {
         if (appointment.cancelled) return "red";
@@ -55,13 +47,6 @@ const MyAppointments = () => {
         return "yellow"; // Pending
     };
 
-    // const getStatusText = (appointment) => {
-    //     if (appointment.cancelled) return "Cancelled";
-    //     if (appointment.isCompleted) return "Completed";
-    //     // if (appointment.payment) return "Confirmed";
-    //     if (appointment.payment === "Online") return "Confirmed";
-    //     return "Pending Payment";
-    // };
 
     const getStatusText = (appointment) => {
         if (appointment.cancelled) return "Cancelled";
@@ -180,15 +165,27 @@ const MyAppointments = () => {
             );
 
             if (data.success) {
-                toast.success(data.message);
+                // toast.success(data.message);
+                                toast.success(
+                                    "Your appointment was cancelled successfully."
+                                );
+
                 getUserAppointments();
                 getDoctorsData();
             } else {
-                toast.error(data.message);
+                // toast.error(data.message);
+                                toast.error(
+                                    "Failed to cancel the appointment. Please try again."
+                                );
+
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.message);
+            // toast.error(error.message);
+            toast.error(
+                error.response?.data?.message ||
+                    "An error occurred while cancelling your appointment. Please try again later."
+            );
         }
     };
 
@@ -203,11 +200,17 @@ const MyAppointments = () => {
             if (data.sessionUrl) {
                 window.location.href = data.sessionUrl;
             } else {
-                toast.error("Failed to initiate Stripe payment.");
+                toast.error(
+                    "Unable to start payment process. Please try again."
+                );
             }
         } catch (error) {
             console.error(error);
-            toast.error(error.message);
+            // toast.error(error.message);
+             toast.error(
+                 error.response?.data?.message ||
+                     "Payment process failed. Please check your connection or try again later."
+             );
         }
     };
 

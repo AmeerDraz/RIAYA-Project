@@ -1,4 +1,3 @@
-
 import React, { useContext, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AdminContext } from "../../context/AdminContext";
@@ -167,7 +166,6 @@ const ViewDoctor = () => {
     //     }
     // };
 
-
     const handleInputChange = (e) => {
         const { name, type, value, checked } = e.target;
         if (type === "checkbox") {
@@ -192,8 +190,6 @@ const ViewDoctor = () => {
             }));
         }
     };
-    
-
 
     const updateProfile = async () => {
         try {
@@ -250,9 +246,11 @@ const ViewDoctor = () => {
                 updateData,
                 { headers: { aToken } }
             );
-            
+
             if (data.success) {
-                toast.success(data.message);
+                // toast.success(data.message);
+                toast.success("Working hours updated successfully.");
+
                 setIsEdit(false);
                 // Refresh doctor data
                 const updatedDoctor = await getDoctorById(doctorId);
@@ -260,11 +258,15 @@ const ViewDoctor = () => {
                     setDoctor(updatedDoctor);
                 }
             } else {
-                toast.error(data.message);
+                // toast.error(data.message);
+                toast.error(
+                    "Failed to update working hours. Please try again."
+                );
             }
         } catch (error) {
             console.error("Error updating profile:", error);
-            toast.error(error.response?.data?.message || error.message);
+            // toast.error(error.response?.data?.message || error.message);
+            toast.error("An error occurred while updating working hours.");
         } finally {
             setSavingProfile(false);
         }
@@ -315,7 +317,7 @@ const ViewDoctor = () => {
                 requestBody,
                 { headers: { aToken } }
             );
-            
+
             if (data.success) {
                 toast.success("Working hours updated successfully!");
                 // Refresh doctor data
@@ -324,14 +326,14 @@ const ViewDoctor = () => {
                     setDoctor(updatedDoctor);
                 }
             } else {
-                toast.error(data.message);
+                // toast.error(data.message);
+                toast.error(
+                    "Failed to update working hours. Please try again."
+                );
             }
         } catch (error) {
             console.error(error);
-            const errorMessage =
-                error.response?.data?.message ||
-                "Failed to update working hours";
-            toast.error(errorMessage);
+            toast.error("An error occurred while updating working hours.");
         } finally {
             setSavingSlots(false);
         }

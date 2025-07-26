@@ -31,7 +31,7 @@ const AddDoctor = () => {
         try {
             if (!docImg) {
                 setLoading(false);
-                return toast.error("Image Not Selected");
+                return toast.error("Please upload a doctor image.");
             }
 
             const formData = new FormData();
@@ -58,7 +58,7 @@ const AddDoctor = () => {
             );
 
             if (data.success) {
-                toast.success(data.message);
+                toast.success("Doctor added successfully!");
                 setDocImg(false);
                 setName("");
                 setPassword("");
@@ -70,10 +70,12 @@ const AddDoctor = () => {
                 setFees("");
                 setAvailable(true);
             } else {
-                toast.error(data.message);
+                toast.error(
+                    data.message || "Something went wrong. Please try again."
+                );
             }
         } catch (error) {
-            toast.error(error.message);
+                toast.error(`Error: ${error.message}`);
             console.log(error);
         } finally {
             setLoading(false);

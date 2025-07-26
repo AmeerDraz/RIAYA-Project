@@ -26,10 +26,10 @@ const PaymentSuccess = () => {
                         },
                     }
                 );
-                toast.success("✅ Payment confirmed successfully.");
+                toast.success("Payment confirmed successfully.");
             } catch (error) {
                 console.error("❌ Payment confirmation error:", error);
-                toast.error("❌ Error confirming payment.");
+                toast.error("Error confirming payment.");
             }
         };
 

@@ -41,4 +41,3 @@ app.listen(port, () => console.log("server started", port));
 
 app.use("/api/doctor", doctorRouter);
 
-//database

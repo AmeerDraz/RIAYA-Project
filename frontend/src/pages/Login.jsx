@@ -1,5 +1,3 @@
-
-
 import React, { useContext, useEffect, useState } from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +35,11 @@ const Login = () => {
                     toast.success("Account created successfully!");
                     navigate("/my-profile");
                 } else {
-                    toast.error(data.message);
+                    // toast.error(data.message);
+                    toast.error(
+                        data.message ||
+                            "Failed to create account. Please try again."
+                    );
                 }
             } else {
                 const { data } = await axios.post(
@@ -52,11 +54,16 @@ const Login = () => {
                     setToken(data.token);
                     toast.success("Login successful!");
                 } else {
-                    toast.error(data.message);
+                    // toast.error(data.message);
+                    toast.error(data.message || "Incorrect email or password.");
                 }
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || error.message);
+            // toast.error(error.response?.data?.message || error.message);
+            toast.error(
+                error.response?.data?.message ||
+                    "An error occurred while connecting to the server. Please try again later."
+            );
         } finally {
             setLoading(false); // إيقاف اللودر
         }

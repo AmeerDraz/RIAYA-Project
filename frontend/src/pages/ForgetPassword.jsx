@@ -3,13 +3,17 @@
 import React, { useState } from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Loader from "../components/Loader"; // تأكد من وجوده
 
 const ForgetPassword = () => {
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const onForgetPasswordSubmit = async (event) => {
         event.preventDefault();
+        setLoading(true);
 
         try {
             const response = await fetch(
@@ -24,25 +28,23 @@ const ForgetPassword = () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert(
-                    data.message ||
-                        "A password reset link has been sent to your email."
-                );
+                toast.success(data.message || "Reset link sent to your email.");
                 navigate("/login");
             } else {
-                alert(
-                    data.message || "Something went wrong. Please try again."
-                );
+                toast.error(data.message || "Something went wrong.");
             }
         } catch (error) {
             console.error("Error sending reset request:", error);
-            alert("Network error. Please try again later.");
+            toast.error("Network error. Please try again later.");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="flex flex-col min-h-screen">
-            {/* Main Content */}
+            {loading && <Loader />}
+
             <div className="flex flex-1 items-center justify-center p-8">
                 <div className="flex w-full max-w-5xl items-center">
                     {/* Left Side - Image */}
@@ -54,7 +56,7 @@ const ForgetPassword = () => {
                         />
                     </div>
 
-                    {/* Right Side - Forget Password Form */}
+                    {/* Right Side - Form */}
                     <form
                         onSubmit={onForgetPasswordSubmit}
                         className="w-full md:w-1/2 flex items-center justify-center"
@@ -80,8 +82,9 @@ const ForgetPassword = () => {
                             <button
                                 className="bg-primary text-white w-full py-2 rounded-md text-base"
                                 type="submit"
+                                disabled={loading}
                             >
-                                Send Reset Link
+                                {loading ? "Sending..." : "Send Reset Link"}
                             </button>
                             <p>
                                 Back to{" "}

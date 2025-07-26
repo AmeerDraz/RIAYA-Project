@@ -8,11 +8,8 @@ import appointmentModel from "../models/appointmentModel.js";
 import Stripe from "stripe";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import { Resend } from "resend";
 
-// const { Resend } = require("resend");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 // تسجيل المستخدم
 const registerUser = async (req, res) => {
@@ -88,45 +85,34 @@ const forgotPassword = async (req, res) => {
         await user.save();
         console.log("user after save:");
 
-        const resetLink = `http://localhost:5173/reset-password/${token}`; // Frontend URL
-        // console.log(process.env.EMAIL_USER);
-        // console.log(process.env.EMAIL_USER);
+        const resetLink = `http://localhost:5173/reset-password?token=${token}`; 
+
 
         // Send email
         const transporter = nodemailer.createTransport({
             service: "gmail",
             host: "smtp.gmail.com",
-            port: 587,
-            secure: false,
+            // port: 587,
+            // secure: false,
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS,
             },
-            logger: true,
-            debug: true,
+            // logger: true,
+            // debug: true,
         });
         console.log("prcEm", process.env.EMAIL_USER);
         console.log("prcps", process.env.EMAIL_PASS);
         console.log("before sending msg");
         console.log("user email:", user.email);
-        // await transporter.sendMail({
-        // await resend.emails.send({
-        //     from: '"MyApp Support Team" <0d1cb88b49@emaily.pro>',
-        //     to: user.email,
-        //     subject: "Reset your password",
-        //     html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p>`,
-        // });
-
-        await resend.emails.send({
-            // from: process.env.EMAIL_USER,
-            from: "onboarding@resend.dev",
-            // to: user.email,
-            to: "ameerdraz55@gmail.com",
-            // to: "montherismail90@gmail.com",
+        await transporter.sendMail({
+            from: '"MyApp Support Team" <0d1cb88b49@emaily.pro>',
+            to: user.email,
             subject: "Reset your password",
-            html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p> `,
+            html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p>`,
         });
 
+  
         console.log("sent email to:", user.email);
 
         res.json({ message: "Password reset link sent to your email" });
@@ -374,57 +360,6 @@ const listAppointment = async (req, res) => {
     }
 };
 
-// const listAppointment = async (req, res) => {
-//     try {
-//         const userId = req.userId;
-//         const appointments = await appointmentModel
-//             .find({ userId })
-//             .populate("docId", "name fees");
-
-//         const appointmentsWithPayment = appointments.map((app) => ({
-//             ...app.toObject(),
-//             payment: app.payment || "Cash", // قيمة افتراضية لو مش مدفوعة أونلاين
-//         }));
-
-//         res.json({ success: true, appointments: appointmentsWithPayment });
-//     } catch (error) {
-//         console.error(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
-// const listAppointment = async (req, res) => {
-//     try {
-//         const userId = req.userId;
-//         const appointments = await appointmentModel
-//             .find({ userId })
-//             .populate("docId", "name fees");
-
-//         const appointmentsWithPayment = appointments.map((app) => {
-//             let paymentStatus = "Cash"; // القيمة الافتراضية
-
-//             if (app.payment && typeof app.payment === "string") {
-//                 // إذا كانت قيمة الدفع موجودة ونصية
-//                 paymentStatus =
-//                     app.payment.toLowerCase() === "online"
-//                         ? "Online"
-//                         : app.payment;
-//             }
-//             // لو payment قيمة أخرى أو غير موجودة، تبقى "Cash"
-
-//             return {
-//                 ...app.toObject(),
-//                 payment: paymentStatus,
-//             };
-//         });
-
-//         res.json({ success: true, appointments: appointmentsWithPayment });
-//     } catch (error) {
-//         console.error(error);
-//         res.json({ success: false, message: error.message });
-//     }
-// };
-
 // إلغاء موعد
 const cancelAppointment = async (req, res) => {
     try {
@@ -468,10 +403,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const paymentStripe = async (req, res) => {
     try {
-        // console.log("-- user id: ", req.userId);
         const { appointmentId } = req.body;
 
-        // console.log("appointmentId: ", appointmentId);
 
         // جلب الموعد مع بيانات الطبيب
         const appointment = await appointmentModel
@@ -539,7 +472,6 @@ const paymentStripe = async (req, res) => {
 
 const stripeWebhook = async (req, res) => {
     const sig = req.headers["stripe-signature"];
-    console.log("startaaaaaaaaaaaaaa");
     try {
         const event = stripe.webhooks.constructEvent(
             req.body,
@@ -561,7 +493,7 @@ const stripeWebhook = async (req, res) => {
 
         res.json({ received: true });
     } catch (err) {
-        console.error("❌ Stripe Webhook Error:", err.message);
+        console.error("Stripe Webhook Error:", err.message);
         res.status(400).send(`Webhook Error: ${err.message}`);
     }
 };
@@ -650,7 +582,7 @@ const getDoctorAvailableSlots = async (req, res) => {
                     available: doctor.available,
                     image: doctor.image,
                     about: doctor.about,
-                    address: doctor.address, // ✅ تم إضافته هنا
+                    address: doctor.address, 
                 },
             });
         }
@@ -758,7 +690,7 @@ const getDoctorAvailableSlots = async (req, res) => {
                 available: doctor.available,
                 image: doctor.image,
                 about: doctor.about,
-                address: doctor.address, // ✅ هنا أيضاً للتأكد من إرساله
+                address: doctor.address, 
             },
         });
     } catch (error) {

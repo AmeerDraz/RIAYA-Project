@@ -10,8 +10,7 @@ const appointmentSchema = new mongoose.Schema({
     amount: { type: Number, require: true },
     date: { type: Number, require: true },
     cancelled: { type: Boolean, default: false },
-    // payment: { type: Boolean, default: false },
-    // payment: { type: String, enum: ["Cash", "Online"], default: "Cash" },
+
     payment: {
         type: String,
         enum: ["Pending", "Online", "Cash"],
@@ -25,4 +24,3 @@ const appointmentModel =
     mongoose.models.appointment ||
     mongoose.model("appointment", appointmentSchema);
 export default appointmentModel;
-

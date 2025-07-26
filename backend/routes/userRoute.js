@@ -18,7 +18,7 @@ import {
 import {
     addTestimonial,
     getTestimonials,
-    updateTestimonial, // ✅ استيراد دالة التعديل
+    updateTestimonial, 
 } from "../controllers/testimonialController.js";
 
 import authUser from "../middlewares/authUser.js";
@@ -47,7 +47,7 @@ userRouter.get("/test-doctors", testDoctors);
 // ⭐ التقييمات
 userRouter.post("/testimonial/add", authUser, addTestimonial);
 userRouter.get("/testimonial/list", getTestimonials);
-userRouter.put("/testimonial/update/:id", authUser, updateTestimonial); // ✅ جديد
+userRouter.put("/testimonial/update/:id", authUser, updateTestimonial); // 
 
 /************************** */
 

@@ -199,11 +199,7 @@ const Doctors = () => {
                             className="border border-green-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
                             key={index}
                         >
-                            {/* <img
-                                className="bg-green-50  h-[220px] w-[260px] object-cover object-top"
-                                src={item.image}
-                                alt=""
-                            /> */}
+                            
                             <img
                                 className="bg-green-50 w-full h-[220px] object-cover object-top rounded-t-xl"
                                 src={item.image}

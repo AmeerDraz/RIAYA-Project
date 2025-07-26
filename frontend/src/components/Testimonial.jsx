@@ -119,7 +119,7 @@ function Testimonial() {
               text: "Write your own review and share your experience with us!",
           };
 
-    const { user = {}, title = "", text = "" } = current;
+    const { user = {}, text = "" } = current;
     const location = user.address?.line1 || "";
 
     // قص 400 كلمة كحد أقصى

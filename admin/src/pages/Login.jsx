@@ -26,8 +26,12 @@ const Login = () => {
                 if (data.success) {
                     localStorage.setItem("aToken", data.token);
                     setAToken(data.token);
+                                        toast.success(
+                                            "Logged in successfully as Admin."
+                                        );
+
                 } else {
-                    toast.error(data.message);
+                    toast.error(data.message || "Invalid admin credentials.");
                 }
             } else {
                 const { data } = await axios.post(
@@ -37,8 +41,12 @@ const Login = () => {
                 if (data.success) {
                     localStorage.setItem("dToken", data.token);
                     setDToken(data.token);
+                                        toast.success(
+                                            "Logged in successfully as Doctor."
+                                        );
+
                 } else {
-                    toast.error(data.message);
+                    toast.error(data.message || "Invalid doctor credentials.");
                 }
             }
         } catch (error) {
