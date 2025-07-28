@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +15,7 @@ const ForgetPassword = () => {
 
         try {
             const response = await fetch(
-                "http://localhost:4000/api/user/forgot-password",
+                import.meta.env.VITE_BACKEND_URL + "/api/user/forgot-password",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
