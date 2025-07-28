@@ -10,7 +10,9 @@ const ResetPassword = () => {
         e.preventDefault();
         try {
             const res = await fetch(
-                `http://localhost:4000/api/user/reset-password/${token}`,
+                `${
+                    import.meta.env.VITE_BACKEND_URL
+                }/api/user/reset-password/${token}`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
