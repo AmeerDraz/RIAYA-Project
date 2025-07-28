@@ -1,9 +1,9 @@
+
 import React, { useContext, useState } from "react";
-// import { assets } from "../assets/assets";
 import { AdminContext } from "../context/AdminContext";
+import { DoctorContext } from "../context/DoctorContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { DoctorContext } from "../context/DoctorContext";
 import { assets } from "../assets/assets";
 
 const Login = () => {
@@ -16,106 +16,96 @@ const Login = () => {
 
     const onSubmitHandler = async (event) => {
         event.preventDefault();
-
         try {
-            if (state === "Admin") {
-                const { data } = await axios.post(
-                    backendUrl + "/api/admin/login",
-                    { email, password }
-                );
-                if (data.success) {
-                    localStorage.setItem("aToken", data.token);
-                    setAToken(data.token);
-                                        toast.success(
-                                            "Logged in successfully as Admin."
-                                        );
+            const endpoint =
+                state === "Admin" ? "/api/admin/login" : "/api/doctor/login";
+            const { data } = await axios.post(backendUrl + endpoint, {
+                email,
+                password,
+            });
 
-                } else {
-                    toast.error(data.message || "Invalid admin credentials.");
-                }
+            if (data.success) {
+                const tokenKey = state === "Admin" ? "aToken" : "dToken";
+                localStorage.setItem(tokenKey, data.token);
+                state === "Admin"
+                    ? setAToken(data.token)
+                    : setDToken(data.token);
+                toast.success(`Logged in successfully as ${state}.`);
             } else {
-                const { data } = await axios.post(
-                    backendUrl + "/api/doctor/login",
-                    { email, password }
+                toast.error(
+                    data.message ||
+                        `Invalid ${state.toLowerCase()} credentials.`
                 );
-                if (data.success) {
-                    localStorage.setItem("dToken", data.token);
-                    setDToken(data.token);
-                                        toast.success(
-                                            "Logged in successfully as Doctor."
-                                        );
-
-                } else {
-                    toast.error(data.message || "Invalid doctor credentials.");
-                }
             }
         } catch (error) {
             toast.error("Login failed. Please try again.");
-            console.log(error);
+            console.error(error);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 py-12">
-            <div className="h-[80vh] w-full max-w-6xl bg-white shadow-xl rounded-xl overflow-hidden flex flex-col md:flex-row transition-all duration-500">
-                {/* Left side (Logo/Image) */}
-                <div className="md:w-1/2 flex items-center justify-center bg-[#97D7CA] p-10 text-white flex-col">
+        <div className="min-h-screen flex items-center justify-center px-4 py-6 bg-gray-50">
+            <div className="w-full max-w-7xl bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[85vh] md:min-h-[90vh] lg:min-h-[90vh] transition-all duration-500">
+                {/* Left Side (Image & Welcome Text) */}
+                <div className="w-full md:w-1/2 flex items-center justify-center bg-[#97D7CA] px-6 py-8 sm:px-10 sm:py-12 md:px-14 md:py-20 text-white flex-col">
                     <img
                         src={assets.admin_logo}
                         alt="Logo"
-                        className="w-40 h-40 object-contain mb-6"
+                        className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain mb-4"
                     />
-                    <h2 className="text-3xl font-bold mb-2">Welcome Back</h2>
-                    <p className="text-sm text-center">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 text-center">
+                        Welcome Back
+                    </h2>
+                    <p className="text-xs sm:text-sm md:text-base text-center">
                         Access your admin or doctor dashboard with ease.
                     </p>
                 </div>
 
-                {/* Right side (Login Form) */}
+                {/* Right Side (Login Form) */}
                 <form
                     onSubmit={onSubmitHandler}
-                    className="md:w-1/2 w-full p-10 flex items-center justify-center "
+                    className="w-full md:w-1/2 px-6 py-8 sm:px-10 sm:py-12 md:px-14 md:py-20 flex items-center justify-center"
                 >
                     <div className="w-full max-w-sm text-gray-700">
-                        <h2 className="text-2xl font-bold mb-6 text-center">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-center">
                             {state}{" "}
                             <span className="text-[#00BFA5]">Login</span>
                         </h2>
 
                         <div className="mb-4">
-                            <label className="block mb-1 font-medium">
+                            <label className="block mb-1 font-medium text-sm sm:text-base">
                                 Email
                             </label>
                             <input
-                                onChange={(e) => setEmail(e.target.value)}
-                                value={email}
                                 type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00BFA5]"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00BFA5] text-sm sm:text-base"
                             />
                         </div>
 
                         <div className="mb-4">
-                            <label className="block mb-1 font-medium">
+                            <label className="block mb-1 font-medium text-sm sm:text-base">
                                 Password
                             </label>
                             <input
-                                onChange={(e) => setPassword(e.target.value)}
-                                value={password}
                                 type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00BFA5]"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00BFA5] text-sm sm:text-base"
                             />
                         </div>
 
                         <button
                             type="submit"
-                            className="w-full bg-[#00BFA5] hover:bg-[#009e85] text-white py-2 rounded-lg font-semibold transition duration-300"
+                            className="w-full bg-[#00BFA5] hover:bg-[#009e85] text-white py-2 rounded-lg font-semibold transition duration-300 text-sm sm:text-base"
                         >
                             Login
                         </button>
 
-                        <p className="text-sm text-center mt-4">
+                        <p className="text-xs sm:text-sm text-center mt-4">
                             {state === "Admin"
                                 ? "Doctor Login?"
                                 : "Admin Login?"}{" "}

@@ -147,25 +147,6 @@ const ViewDoctor = () => {
         }
     }, [doctorId, getDoctorById, navigate]);
 
-    // const handleInputChange = (e) => {
-    //     const { name, value, type, checked } = e.target;
-    //     if (name.includes(".")) {
-    //         const [parent, child] = name.split(".");
-    //         setFormData((prev) => ({
-    //             ...prev,
-    //             [parent]: {
-    //                 ...prev[parent],
-    //                 [child]: type === "checkbox" ? checked : value,
-    //             },
-    //         }));
-    //     } else {
-    //         setFormData((prev) => ({
-    //             ...prev,
-    //             [name]: type === "checkbox" ? checked : value,
-    //         }));
-    //     }
-    // };
-
     const handleInputChange = (e) => {
         const { name, type, value, checked } = e.target;
         if (type === "checkbox") {
