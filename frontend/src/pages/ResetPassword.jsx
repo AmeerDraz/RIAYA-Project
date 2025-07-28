@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {  useNavigate, useSearchParams } from "react-router-dom";
 
 const ResetPassword = () => {
     const [password, setPassword] = useState("");
-    const { token } = useParams();
+    const { token } = useSearchParams();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
