@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-import {  useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const ResetPassword = () => {
     const [password, setPassword] = useState("");
-    const { token } = useSearchParams();
+    const [URLSearchParams] = useSearchParams();
     const navigate = useNavigate();
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const res = await fetch(
                 `${
                     import.meta.env.VITE_BACKEND_URL
-                }/api/user/reset-password/${token}`,
+                }/api/user/reset-password/${URLSearchParams.get("token")}`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
