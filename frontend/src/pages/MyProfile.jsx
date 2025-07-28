@@ -1,5 +1,3 @@
-
-
 import React, { useContext, useState, useEffect } from "react";
 import { assets } from "../assets/assets";
 import { AppContext } from "../context/AppContext";
@@ -119,24 +117,24 @@ const MyProfile = () => {
     }
 
     return (
-        <div className="min-h-screen py-4 mx-6">
-            <div className="max-w-8xl px-4">
+        <div className="min-h-screen py-2 px-2 sm:py-4 sm:px-4 md:px-6 lg:mx-6">
+            <div className="max-w-4xl mx-auto px-0 sm:px-4">
                 {/* Header Section */}
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <div className="text-center mb-6 sm:mb-8">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">
                         My Profile
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 text-sm sm:text-base">
                         Manage your personal information and preferences
                     </p>
                 </div>
 
                 <div className="bg-white rounded-xl border overflow-hidden">
                     {/* Profile Header */}
-                    <div className=" px-8 py-6 text-gray-900 border  bottom-1 bg-white rounded-t[8px] rounded-b-0 overflow-hidden mb-8">
-                        <div className="flex items-center gap-6">
+                    <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6 text-gray-900 border-b bg-white rounded-t-[8px] mb-6 sm:mb-8">
+                        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                             {/* Profile Image */}
-                            <div className="relative mr-6 ">
+                            <div className="relative mb-4 sm:mb-0 sm:mr-6 flex-shrink-0">
                                 {isEdit ? (
                                     <label
                                         htmlFor="image"
@@ -144,7 +142,7 @@ const MyProfile = () => {
                                     >
                                         <div className="relative">
                                             <img
-                                                className="w-44 h- rounded-l-6 rounded-r-2 object-cover object-top group-hover:border-white transition-all duration-200"
+                                                className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-[16px] object-cover object-top group-hover:border-white transition-all duration-200"
                                                 src={
                                                     image
                                                         ? URL.createObjectURL(
@@ -159,7 +157,7 @@ const MyProfile = () => {
                                                         assets.profile_pic;
                                                 }}
                                             />
-                                            <div className="absolute inset-0 bg-black/20 rounded-[6px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                                            <div className="absolute inset-0 bg-black/20 rounded-[16px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
                                                 <svg
                                                     className="w-6 h-6 text-white"
                                                     fill="none"
@@ -193,7 +191,7 @@ const MyProfile = () => {
                                     </label>
                                 ) : (
                                     <img
-                                        className="w-44 h- rounded-[16px] object-cover object-top "
+                                        className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-[16px] object-cover object-top"
                                         src={
                                             userData.image || assets.profile_pic
                                         }
@@ -206,11 +204,11 @@ const MyProfile = () => {
                             </div>
 
                             {/* Name and Status */}
-                            <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
+                            <div className="flex-1 w-full text-center sm:text-left">
+                                <div className="flex flex-col sm:flex-row items-center sm:items-end gap-2 sm:gap-3 mb-2">
                                     {isEdit ? (
                                         <input
-                                            className="text-2xl font-bold bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+                                            className="text-lg sm:text-2xl font-bold bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-200"
                                             type="text"
                                             value={tempData.name}
                                             onChange={(e) =>
@@ -222,24 +220,24 @@ const MyProfile = () => {
                                             placeholder="Enter your name"
                                         />
                                     ) : (
-                                        <h2 className="text-2xl font-bold">
+                                        <h2 className="text-lg sm:text-2xl font-bold">
                                             {userData.name}
                                         </h2>
                                     )}
                                 </div>
-                                <p className="text-gray-600">
+                                <p className="text-gray-600 text-sm sm:text-base">
                                     {userData.email}
                                 </p>
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="flex gap-3">
+                            <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-0">
                                 {isEdit ? (
                                     <>
                                         <button
                                             onClick={updateUserProfileData}
                                             disabled={loading}
-                                            className="px-6 py-2 bg-white border border-1 border-primary text-primary rounded-lg font-medium hover:bg-green-50 transition-colors disabled:opacity-50"
+                                            className="px-4 sm:px-6 py-2 bg-white border border-1 border-primary text-primary rounded-lg font-medium hover:bg-green-50 transition-colors disabled:opacity-50 text-sm sm:text-base"
                                         >
                                             {loading
                                                 ? "Saving..."
@@ -247,7 +245,7 @@ const MyProfile = () => {
                                         </button>
                                         <button
                                             onClick={handleCancel}
-                                            className="px-6 py-2 border border-white/30 text-white rounded-lg font-medium hover:bg-white/10 transition-colors"
+                                            className="px-4 sm:px-6 py-2 border border-white/30 text-gray-700 rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm sm:text-base"
                                         >
                                             Cancel
                                         </button>
@@ -255,7 +253,7 @@ const MyProfile = () => {
                                 ) : (
                                     <button
                                         onClick={() => setIsEdit(true)}
-                                        className="px-6 py-2 border border-1 border-primary bg-white text-primary rounded-lg font-medium hover:bg-green-50 transition-colors"
+                                        className="px-4 sm:px-6 py-2 border border-1 border-primary bg-white text-primary rounded-lg font-medium hover:bg-green-50 transition-colors text-sm sm:text-base"
                                     >
                                         Edit Profile
                                     </button>
@@ -265,8 +263,8 @@ const MyProfile = () => {
                     </div>
 
                     {/* Profile Content */}
-                    <div className="p-8">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="p-4 sm:p-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                             {/* Contact Information */}
                             <div>
                                 <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
