@@ -191,6 +191,20 @@ const Doctors = () => {
                     >
                         Gastroenterologist
                     </p>
+                    <p
+                        onClick={() =>
+                            speciality === "Dentist"
+                                ? navigate("/doctors")
+                                : navigate("/doctors/Dentist")
+                        }
+                        className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${
+                            speciality === "Dentist"
+                                ? "bg-teal-100 text-black"
+                                : ""
+                        }`}
+                    >
+                        Dentist
+                    </p>
                 </div>
                 <div className="w-full grid grid-cols-auto gap-4 gap-y-6">
                     {filterDoc.map((item, index) => (
@@ -199,7 +213,6 @@ const Doctors = () => {
                             className="border border-green-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
                             key={index}
                         >
-                            
                             <img
                                 className="bg-green-50 w-full h-[220px] object-cover object-top rounded-t-xl"
                                 src={item.image}

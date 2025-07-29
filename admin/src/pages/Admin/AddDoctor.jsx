@@ -1,5 +1,3 @@
-
-
 import React, { useContext, useState } from "react";
 import { assets } from "../../assets/assets";
 import { AdminContext } from "../../context/AdminContext";
@@ -75,7 +73,7 @@ const AddDoctor = () => {
                 );
             }
         } catch (error) {
-                toast.error(`Error: ${error.message}`);
+            toast.error(`Error: ${error.message}`);
             console.log(error);
         } finally {
             setLoading(false);
@@ -212,6 +210,7 @@ const AddDoctor = () => {
                                 <option value="Gastroenterologist">
                                     Gastroenterologist
                                 </option>
+                                <option value="Dentist">Dentist</option>
                             </select>
                         </div>
 

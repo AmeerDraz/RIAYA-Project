@@ -34,9 +34,8 @@ import General_physician from "./General_physician.svg";
 import Gynecologist from "./Gynecologist.svg";
 import Neurologist from "./Neurologist.svg";
 import Pediatricians from "./Pediatricians.svg";
+import Dentist from "./Dentist.png";
 import upload_area from "../assets/upload_area.png";
-
-
 
 // ///////////////////////////////
 
@@ -104,6 +103,10 @@ export const specialityData = [
     {
         speciality: "Gastroenterologist",
         image: Gastroenterologist,
+    },
+    {
+        speciality: "Dentist",
+        image: Dentist,
     },
 ];
 
