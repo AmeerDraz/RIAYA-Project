@@ -156,7 +156,7 @@ const Navbar = () => {
                                 }}
                                 className="bg-primary text-white px-6 py-2 rounded-[6px] font-light"
                             >
-                                Create account
+                                Login
                             </button>
                         )}
                     </div>
