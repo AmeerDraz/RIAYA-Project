@@ -29,7 +29,7 @@ const Footer = () => {
                     <p className="text-xl font-medium mb-5">Contact Us</p>
                     <ul className="flex flex-col gap-2 text-gray-600">
                         <li>Palestine , Gaza City , Al-basha Street ,18</li>
-                        <li>+970-59-235-2574</li>
+                        <li>+972597661558</li>
                         <li>info@riaya.com</li>
                     </ul>
                 </div>
@@ -46,4 +46,4 @@ const Footer = () => {
     );
 };
 
-export default Footer; 
+export default Footer;
