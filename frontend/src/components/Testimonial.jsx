@@ -15,27 +15,53 @@ function Testimonial() {
         location: "",
     });
     const [testimonialList, setTestimonialList] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const { backendUrl, token, userData } = useContext(AppContext);
+    const { backendUrl, token, userData, fetchUserData } =
+        useContext(AppContext);
 
     const fetchTestimonials = async () => {
         try {
+            setLoading(true);
             const { data } = await axios.get(
                 `${backendUrl}/api/user/testimonial/list`
-            );
+            ); // إزالة token من الاستدعاء
             if (data.success) {
                 setTestimonialList(data.testimonials);
+                if (fetchUserData && token) fetchUserData(); // فقط إذا كان هناك token
+            } else {
+                console.error("API response error:", data.message);
             }
         } catch (error) {
             toast.error("Failed to load testimonials.");
+            console.error("Fetch testimonials error:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchTestimonials();
-    }, []);
+        fetchTestimonials(); // تشغيل دائمًا بغض النظر عن token أو userData
+    }, [backendUrl]);
 
-    const total = testimonialList.length + 1;
+    // تحقق إذا كان المستخدم لديه تقييم
+    const userHasTestimonial =
+        userData?.isReviewed ||
+        (token && testimonialList.some((t) => t.user?._id === userData?._id));
+
+    // واجهة إضافة التقييم تظهر فقط إذا كان المستخدم مسجلاً الدخول ولم يسبق له التقييم
+    const showAnonymous = !!token && !userHasTestimonial;
+    let total = testimonialList.length;
+    let anonymousPosition = null;
+    if (showAnonymous) {
+        if (testimonialList.length === 0) {
+            anonymousPosition = 0;
+            total = 1;
+        } else {
+            anonymousPosition = 1;
+            total = testimonialList.length + 1;
+        }
+    }
 
     const handlePrev = () => {
         setIndex((prev) => (prev === 0 ? total - 1 : prev - 1));
@@ -46,6 +72,10 @@ function Testimonial() {
     };
 
     const handleFormOpen = (testimonial = null) => {
+        if (!token) {
+            toast.error("Please log in to add or edit a review.");
+            return;
+        }
         if (testimonial) {
             setEditId(testimonial._id);
             setFormData({
@@ -66,6 +96,11 @@ function Testimonial() {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
+        if (!token) {
+            toast.error("Please log in to submit or edit a review.");
+            setModalOpen(false);
+            return;
+        }
         try {
             const url = editId
                 ? `${backendUrl}/api/user/testimonial/update/${editId}`
@@ -80,9 +115,7 @@ function Testimonial() {
                     text: formData.text,
                     location: formData.location,
                 },
-                {
-                    headers: { token },
-                }
+                { headers: { token } }
             );
 
             if (data.success) {
@@ -101,17 +134,24 @@ function Testimonial() {
         }
     };
 
-    const userHasTestimonial = testimonialList.some(
-        (t) => t.user?._id === userData?._id
-    );
-
-    const isReviewCard = index === 1;
+    // تحديد إذا كانت البطاقة الحالية هي بطاقة "أضف تقييمك"
+    let isReviewCard = false;
+    let testimonialIndex = index;
+    if (showAnonymous) {
+        if (anonymousPosition === 0) {
+            isReviewCard = index === 0;
+            testimonialIndex = 0;
+        } else if (anonymousPosition === 1) {
+            isReviewCard = index === 1;
+            testimonialIndex = index > 1 ? index - 1 : 0;
+        }
+    }
     const current = !isReviewCard
-        ? testimonialList[index < 1 ? index : index - 1] || {}
+        ? testimonialList[testimonialIndex] || {}
         : {
               user: {
                   name: "Anonymous",
-                  image: assets.upload_area,
+                  image: assets.Anonymous,
                   address: { line1: "" },
               },
               title: "",
@@ -121,35 +161,35 @@ function Testimonial() {
     const { user = {}, text = "" } = current;
     const location = user.address?.line1 || "";
 
-    // قص 400 كلمة كحد أقصى
     const trimmedText =
         text.split(" ").slice(0, 400).join(" ") +
         (text.split(" ").length > 400 ? "..." : "");
 
+    if (loading) {
+        return <div className="text-center py-10">Loading...</div>;
+    }
+
     return (
         <section className="bg-white py-8 md:py-10 min-h-[400px] max-h-[480px] w-full max-w-5xl mx-auto overflow-hidden px-4">
             <div className="relative flex items-center justify-center gap-4">
-                {/* Prev Button */}
                 <button
                     onClick={handlePrev}
                     aria-label="Previous testimonial"
                     className="flex items-center justify-center w-12 h-12 border border-primary rounded-full text-primary hover:bg-primary hover:text-white transition select-none font-bold"
+                    disabled={total <= 1}
                 >
                     ‹
                 </button>
 
-                {/* Content between buttons */}
                 <div className="flex flex-col justify-center md:flex-row items-center gap-8 w-full max-w-3xl">
-                    {/* User Image */}
                     <div className="">
                         <img
-                            src={user.image || "/anonymous-avatar.png"}
+                            src={user.image || assets.Anonymous}
                             alt={user.name || "Anonymous"}
                             className="w-28 h-28 rounded-full object-cover flex-shrink-0 object-top"
                         />
                     </div>
 
-                    {/* Text Content */}
                     <div className="flex flex-col flex-1 min-w-0 ">
                         <h2 className="text-3xl font-extrabold mb-1 text-gray-900">
                             What Our Client Says
@@ -194,8 +234,8 @@ function Testimonial() {
                             </div>
                         )}
 
-                        {/* زر إضافة تقييم */}
-                        {isReviewCard && !userHasTestimonial && token && (
+                        {/* زر إضافة تقييم: يظهر فقط إذا لم يسبق للمستخدم التقييم وكان مسجلاً الدخول */}
+                        {isReviewCard && showAnonymous && (
                             <button
                                 onClick={() => handleFormOpen()}
                                 className="mt-6 bg-teal-600 text-white px-5 py-2 rounded-md hover:bg-teal-700 transition w-fit"
@@ -206,11 +246,11 @@ function Testimonial() {
                     </div>
                 </div>
 
-                {/* Next Button */}
                 <button
                     onClick={handleNext}
                     aria-label="Next testimonial"
                     className="flex items-center justify-center w-12 h-12 border border-primary rounded-full text-primary hover:bg-primary hover:text-white transition select-none font-bold"
+                    disabled={total <= 1}
                 >
                     ›
                 </button>

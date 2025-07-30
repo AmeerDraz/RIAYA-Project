@@ -35,7 +35,7 @@ import Gynecologist from "./Gynecologist.svg";
 import Neurologist from "./Neurologist.svg";
 import Pediatricians from "./Pediatricians.svg";
 import Dentist from "./Dentist.png";
-import upload_area from "../assets/upload_area.png";
+import Anonymous from "../assets/Anonymous.png";
 
 // ///////////////////////////////
 
@@ -63,7 +63,7 @@ export const assets = {
     upload_icon,
     stripe_logo,
     razorpay_logo,
-    upload_area,
+    Anonymous,
 
     // ------------------------
 
