@@ -52,7 +52,6 @@ const Appointment = () => {
             if (data.success) {
                 setDocInfo(data.doctorInfo);
                 setAvailableSlots(data.slots);
-                console.log("Doctor Info:", data.doctorInfo);
             } else {
                 setError(data.message);
                 toast.error(data.message);

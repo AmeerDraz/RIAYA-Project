@@ -43,7 +43,7 @@ const MyProfile = () => {
                     line1: userData.address?.line1 || "",
                     line2: userData.address?.line2 || "",
                 },
-                gender: userData.gender || "male",
+                gender: userData.gender || "",
                 dob: userData.dob || "",
             });
         }
@@ -322,7 +322,10 @@ const MyProfile = () => {
                                                 onChange={(e) =>
                                                     setTempData((prev) => ({
                                                         ...prev,
-                                                        phone: e.target.value,
+                                                        phone: e.target.value.replace(
+                                                            /\s+/g,
+                                                            ""
+                                                        ),
                                                     }))
                                                 }
                                                 placeholder="Enter your phone number"
@@ -487,14 +490,14 @@ const MyProfile = () => {
                                                 }
                                                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                                             >
+                                                <option value="other">
+                                                    Select gender
+                                                </option>
                                                 <option value="male">
                                                     Male
                                                 </option>
                                                 <option value="female">
                                                     Female
-                                                </option>
-                                                <option value="other">
-                                                    Other
                                                 </option>
                                             </select>
                                         ) : (
